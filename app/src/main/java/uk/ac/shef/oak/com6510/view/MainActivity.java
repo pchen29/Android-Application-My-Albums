@@ -14,7 +14,6 @@ import uk.ac.shef.oak.com6510.databinding.PathListBinding;
 import uk.ac.shef.oak.com6510.model.Path;
 import uk.ac.shef.oak.com6510.viewModel.PathViewModel;
 
-
 public class MainActivity extends AppCompatActivity {
 
     public  PathViewModel pViewModel;
