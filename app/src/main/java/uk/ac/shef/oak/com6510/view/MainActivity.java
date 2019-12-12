@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
 
     public  PathViewModel pViewModel;
     private PathListBinding binding;
-
     public RecyclerView.Adapter pAdapter;
     public List<Path> pathList;
 
