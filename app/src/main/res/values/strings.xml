@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">COM6510</string>
+
+    <string name="path_title">Path Title</string>
+    <string name="path_date">23/12/2018</string>
+    <string name="path_time">11:25</string>
+</resources>
