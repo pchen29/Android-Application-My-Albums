@@ -1,4 +1,4 @@
-package uk.ac.shef.oak.com6510.other;
+package uk.ac.shef.oak.com6510.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

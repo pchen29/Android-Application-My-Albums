@@ -12,8 +12,7 @@ import java.util.List;
 import uk.ac.shef.oak.com6510.R;
 import uk.ac.shef.oak.com6510.databinding.PhotoListBinding;
 import uk.ac.shef.oak.com6510.model.Path;
-import uk.ac.shef.oak.com6510.other.PathAdapter;
-import uk.ac.shef.oak.com6510.viewModel.PathViewModel;
+import uk.ac.shef.oak.com6510.adapter.PathAdapter;
 import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 
 public class PhotoActivity extends AppCompatActivity {

@@ -4,11 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
-import uk.ac.shef.oak.com6510.other.PathAdapter;
+import uk.ac.shef.oak.com6510.adapter.PathAdapter;
 import uk.ac.shef.oak.com6510.R;
 import uk.ac.shef.oak.com6510.databinding.PathListBinding;
 import uk.ac.shef.oak.com6510.model.Path;
@@ -20,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private PathListBinding binding;
     public RecyclerView.Adapter pAdapter;
     public List<Path> pathList;
+    private FloatingActionButton mButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +39,22 @@ public class MainActivity extends AppCompatActivity {
         pAdapter = new PathAdapter(this, pathList);
         binding.pathList.setAdapter(pAdapter);
 
-        // 加载数据
+        // add a click event
+        mButton = (FloatingActionButton) findViewById(R.id.add_path_button);
+        mButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                // jump to NewPathActivity from MainActivity
+                intent.setClass(MainActivity.this, NewPathActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
+        // load path data
         pViewModel.loadPath();
+
     }
 }
