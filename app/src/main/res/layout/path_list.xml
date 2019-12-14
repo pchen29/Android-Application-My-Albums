@@ -36,15 +36,13 @@
             app:layout_constraintGuide_percent="0.9" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_path_button"
+            android:id="@+id/add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:elevation="8dp"
             app:fabSize="auto"
             tools:layout_constraintEnd_toEndOf="@id/guideline_ver"
             tools:layout_constraintTop_toTopOf="@id/guideline_hor"
-            tools:layout_editor_absoluteX="347dp"
-            tools:layout_editor_absoluteY="512dp"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,18 +1,35 @@
 package uk.ac.shef.oak.com6510.viewModel;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+
+import java.util.List;
+
 import uk.ac.shef.oak.com6510.model.Photo;
-import uk.ac.shef.oak.com6510.view.PhotoActivity;
 
 public class PhotoViewModel {
-    private Photo model;
-    private PhotoActivity pActivity;
+    private AppCompatActivity pActivity;
+    public MutableLiveData<List<Photo>> photoList;
 
-    public PhotoViewModel(PhotoActivity pActivity){
+    public PhotoViewModel(AppCompatActivity pActivity){
         this.pActivity = pActivity;
-        model = new Photo();
     }
 
+    public MutableLiveData<List<Photo>> getPhotoList(){
+        if(photoList == null){
+            photoList = new MutableLiveData<List<Photo>>();
+            loadPhoto();
+        }
+        return photoList;
+    }
+
+    // load data from DataBase
     public void loadPhoto(){
+
+    }
+
+    //insert new photo to DataBase
+    public void insertDB(Photo photo){
 
     }
 }

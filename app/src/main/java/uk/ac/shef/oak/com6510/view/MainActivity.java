@@ -2,6 +2,7 @@ package uk.ac.shef.oak.com6510.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     public  PathViewModel pViewModel;
     private PathListBinding binding;
     public RecyclerView.Adapter pAdapter;
-    public List<Path> pathList;
+    public LiveData<List<Path>> pathList;
     private FloatingActionButton mButton;
 
     @Override
@@ -32,15 +33,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.path_list);
+        binding.setLifecycleOwner(this);
+
         pViewModel = new PathViewModel(this);
+        pathList = pViewModel.getPath();
         binding.setPath(pViewModel);
+
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         binding.pathList.setLayoutManager(layoutManager);
         pAdapter = new PathAdapter(this, pathList);
         binding.pathList.setAdapter(pAdapter);
 
         // add a click event
-        mButton = (FloatingActionButton) findViewById(R.id.add_path_button);
+        mButton = (FloatingActionButton) findViewById(R.id.add_button);
         mButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -50,11 +56,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
-        // load path data
-        pViewModel.loadPath();
 
     }
 }

@@ -1,25 +1,33 @@
 package uk.ac.shef.oak.com6510.model;
 
+import android.graphics.Bitmap;
+import android.location.Location;
+
 public class Photo {
 
-    private int photoId;
+    private String name;
     private String title;
     private String date;
     private String time;
+    private Location location;
+    private String temperature;
+    private String pressure;
+    private Bitmap photo;
 
-    public Photo(){
-
-
-    }
-    public Photo(int id, String t, String d, String time){
-        photoId = id;
-        title = t;
-        date = d;
+    public Photo(String name, String title, String date, String time, Location location,
+                 String temperature, String pressure, Bitmap photo){
+        this.name = name;
+        this.title = title;
+        this.date = date;
         this.time = time;
+        this.location = location;
+        this.temperature = temperature;
+        this.pressure = pressure;
+        this.photo = photo;
     }
 
-    public void setPhotoId(int photoIdId){
-        this.photoId = photoId;
+    public void setName(String name){
+        this.name = name;
     }
 
     public void setTitle(String title){
@@ -34,8 +42,24 @@ public class Photo {
         this.time = time;
     }
 
-    public int getPhotoId(){
-        return photoId;
+    public void setLocation(Location location){
+        this.location = location;
+    }
+
+    public void setTemperature(String temperature){
+        this.temperature = temperature;
+    }
+
+    public void setPressure(String pressure){
+        this.pressure = pressure;
+    }
+
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
+    }
+
+    public String getName(){
+        return name;
     }
 
     public String getTitle(){
@@ -46,8 +70,24 @@ public class Photo {
         return date;
     }
 
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
     public String getTime(){
         return time;
+    }
+
+    public Location getLocation(){
+        return location;
+    }
+
+    public String getTemperature(){
+        return temperature;
+    }
+
+    public String getPressure(){
+        return pressure;
     }
 
 }

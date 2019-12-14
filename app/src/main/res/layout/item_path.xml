@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:layout_gravity="left"
-                android:text="@{pathItem.title?? @string/path_title}"
+                android:text="@={pathItem.title?? @string/path_title}"
                 />
 
             <LinearLayout
@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:layout_weight="1"
-                    android:text="@{pathItem.date?? @string/path_date}"
+                    android:text="@={pathItem.date?? @string/path_date}"
                     />
 
                 <TextView
@@ -59,7 +59,7 @@
                     android:layout_gravity="right"
                     android:gravity="right"
                     android:layout_weight="1"
-                    android:text="@{pathItem.time?? @string/path_time}"
+                    android:text="@={pathItem.time?? @string/path_time}"
                     />
 
             </LinearLayout>
