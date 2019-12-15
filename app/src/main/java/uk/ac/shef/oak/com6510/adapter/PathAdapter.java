@@ -2,6 +2,7 @@ package uk.ac.shef.oak.com6510.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -22,7 +24,7 @@ import uk.ac.shef.oak.com6510.view.PhotoActivity;
 public class PathAdapter extends RecyclerView.Adapter<PathAdapter.ViewHolder>{
 
     static private Context context;
-    private LiveData<List<Path>> list;
+    private List<Path> list;
 
     public static class ViewHolder extends RecyclerView.ViewHolder  {
         ItemPathBinding binding;
@@ -32,7 +34,7 @@ public class PathAdapter extends RecyclerView.Adapter<PathAdapter.ViewHolder>{
         }
     }
 
-    public PathAdapter(Context cont, LiveData<List<Path>> list) {
+    public PathAdapter(Context cont, List<Path> list) {
         super();
         this.list = list;
         context = cont;
@@ -49,17 +51,17 @@ public class PathAdapter extends RecyclerView.Adapter<PathAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         ViewHolder viewHolder = (ViewHolder)holder;
-
         // dataBinding绑定
-        Path path = list.getValue().get(position);
+        Path path = list.get(position);
         viewHolder.binding.setPathItem(path);
+        final String title = path.getTitle();
 
         // item clickListener
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PhotoActivity.class);
-                intent.putExtra("position", position);
+                intent.putExtra("title", title);
                 context.startActivity(intent);
             }
         });
@@ -68,15 +70,15 @@ public class PathAdapter extends RecyclerView.Adapter<PathAdapter.ViewHolder>{
 
     // convenience method for getting data at click position
     Path getItem(int id) {
-        return list.getValue().get(id);
+        return list.get(id);
     }
 
     public int getItemCount() {
-        return list.getValue().size();
+        return list.size();
     }
 
-    public LiveData<List<Path>> getList() {
+    public List<Path> getList() {
          return list;
-     }
+    }
 
 }

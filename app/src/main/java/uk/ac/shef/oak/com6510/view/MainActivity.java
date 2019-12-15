@@ -3,11 +3,14 @@ package uk.ac.shef.oak.com6510.view;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     public  PathViewModel pViewModel;
     private PathListBinding binding;
     public RecyclerView.Adapter pAdapter;
-    public LiveData<List<Path>> pathList;
+    public MutableLiveData<List<Path>> pathList;
     private FloatingActionButton mButton;
 
     @Override
@@ -35,14 +38,14 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.path_list);
         binding.setLifecycleOwner(this);
 
-        pViewModel = new PathViewModel(this);
-        pathList = pViewModel.getPath();
+        pViewModel = ViewModelProviders.of(this).get(PathViewModel.class);
+        pathList = pViewModel.getPathList();
         binding.setPath(pViewModel);
-
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         binding.pathList.setLayoutManager(layoutManager);
-        pAdapter = new PathAdapter(this, pathList);
+        pAdapter = new PathAdapter(this, pathList.getValue());
+
         binding.pathList.setAdapter(pAdapter);
 
         // add a click event

@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProviders;
 
 import java.util.List;
 
@@ -32,9 +34,8 @@ public class NewPathActivity extends AppCompatActivity {
 
         //binding = DataBindingUtil.setContentView(this, R.layout.new_path);
         //binding.setLifecycleOwner(this);
-
-        pViewModel = new PathViewModel(this);
-        pathList = pViewModel.getPath();
+        pViewModel = ViewModelProviders.of(this).get(PathViewModel.class);
+        pathList = pViewModel.getPathList();
         //binding.setPath(pViewModel);
 
         // add a click event

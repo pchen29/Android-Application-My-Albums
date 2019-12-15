@@ -2,6 +2,7 @@ package uk.ac.shef.oak.com6510.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,17 +22,18 @@ import uk.ac.shef.oak.com6510.view.ShowPhotoActivity;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>{
 
 static private Context context;
-private MutableLiveData<List<Photo>> list;
+private static List<Photo> list;
 
 public static class ViewHolder extends RecyclerView.ViewHolder  {
     ItemPhotoBinding binding;
+
     public ViewHolder(ItemPhotoBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
     }
 }
 
-    public PhotoAdapter(Context cont, MutableLiveData<List<Photo>> list) {
+    public PhotoAdapter(Context cont, List<Photo> list) {
         super();
         this.list = list;
         context = cont;
@@ -49,15 +51,16 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
     public void onBindViewHolder(@NonNull PhotoAdapter.ViewHolder holder, final int position) {
         PhotoAdapter.ViewHolder viewHolder = (PhotoAdapter.ViewHolder)holder;
         // dataBinding绑定
-        Photo photo = list.getValue().get(position);
+        Photo photo = list.get(position);
         viewHolder.binding.setPhotoItem(photo);
+        final String url = photo.getPhotoUrl();
 
         // item clickListener
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ShowPhotoActivity.class);
-                intent.putExtra("position", position);
+                intent.putExtra("url", url);
                 context.startActivity(intent);
             }
         });
@@ -65,14 +68,14 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
 
     // convenience method for getting data at click position
     Photo getItem(int id) {
-        return list.getValue().get(id);
+        return list.get(id);
     }
 
     public int getItemCount() {
-        return list.getValue().size();
+        return list.size();
     }
 
-    public MutableLiveData<List<Photo>> getList() {
+    public List<Photo> getList() {
         return list;
     }
 }

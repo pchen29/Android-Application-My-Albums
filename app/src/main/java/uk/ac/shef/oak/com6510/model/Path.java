@@ -4,18 +4,14 @@ import java.io.File;
 public class Path {
 
     String title;
-    int image = -1;
+    String imageUrl;
     String date;
     String time;
     File file = null;
 
-    public Path(){
-
-    }
-
-    public Path(String title, int image, String date, String time){
+    public Path(String title, String image, String date, String time){
         this.title = title;
-        this.image = image;
+        this.imageUrl = imageUrl;
         this.date = date;
         this.time = time;
     }
@@ -24,8 +20,8 @@ public class Path {
         this.title = title;
     }
 
-    public void setImage(int image){
-        this.image = image;
+    public void setImageUrl(String image){
+        this.imageUrl = imageUrl;
     }
 
     public void setDate(String date){
@@ -36,8 +32,8 @@ public class Path {
         this.time = time;
     }
 
-    public int getImage(){
-        return image;
+    public String getImageUrl(){
+        return imageUrl;
     }
 
     public String getTitle(){

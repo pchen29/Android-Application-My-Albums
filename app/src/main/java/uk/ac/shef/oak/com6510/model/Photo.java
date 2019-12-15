@@ -1,6 +1,5 @@
 package uk.ac.shef.oak.com6510.model;
 
-import android.graphics.Bitmap;
 import android.location.Location;
 
 public class Photo {
@@ -12,10 +11,15 @@ public class Photo {
     private Location location;
     private String temperature;
     private String pressure;
-    private Bitmap photo;
+    private String photoUrl;
+
+    public Photo(String title,String photoUrl){
+        this.title = title;
+        this.photoUrl = photoUrl;
+    }
 
     public Photo(String name, String title, String date, String time, Location location,
-                 String temperature, String pressure, Bitmap photo){
+                 String temperature, String pressure, String photoUrl){
         this.name = name;
         this.title = title;
         this.date = date;
@@ -23,7 +27,7 @@ public class Photo {
         this.location = location;
         this.temperature = temperature;
         this.pressure = pressure;
-        this.photo = photo;
+        this.photoUrl = photoUrl;
     }
 
     public void setName(String name){
@@ -54,8 +58,8 @@ public class Photo {
         this.pressure = pressure;
     }
 
-    public void setPhoto(Bitmap photo) {
-        this.photo = photo;
+    public void setPhotoUrl(String photo) {
+        this.photoUrl = photoUrl;
     }
 
     public String getName(){
@@ -70,8 +74,8 @@ public class Photo {
         return date;
     }
 
-    public Bitmap getPhoto() {
-        return photo;
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
     public String getTime(){

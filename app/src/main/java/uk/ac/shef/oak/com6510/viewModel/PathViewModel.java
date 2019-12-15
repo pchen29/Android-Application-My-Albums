@@ -1,31 +1,32 @@
 package uk.ac.shef.oak.com6510.viewModel;
 
 
+import android.app.Application;
+import android.content.Context;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import uk.ac.shef.oak.com6510.R;
 import uk.ac.shef.oak.com6510.model.Path;
 import uk.ac.shef.oak.com6510.view.MainActivity;
 
 public class PathViewModel extends ViewModel {
 
-    private AppCompatActivity activity;
-    private MutableLiveData<List<Path>> path;
+    private MutableLiveData<List<Path>> pathList;
 
-    public PathViewModel(AppCompatActivity activity){
-        this.activity = activity;
-    }
-
-    public LiveData<List<Path>> getPath(){
-        if (path == null) {
-            path = new MutableLiveData<List<Path>>();
+    public MutableLiveData<List<Path>> getPathList(){
+        if (pathList == null) {
+            pathList = new MutableLiveData<List<Path>>();
             loadPath();
         }
-        return path;
+        return pathList;
     }
 
     // load data from DataBase
