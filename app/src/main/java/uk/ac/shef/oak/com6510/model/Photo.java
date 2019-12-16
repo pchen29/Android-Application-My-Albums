@@ -11,7 +11,6 @@ import androidx.room.PrimaryKey;
 public class Photo {
     @PrimaryKey(autoGenerate = true)
     private String name;
-
     private String title;
     private String date;
     private String time;
@@ -20,7 +19,6 @@ public class Photo {
     private String pressure;
     private Bitmap photo;
     private String photoUrl;
-
 
     public Photo(String title){
         this.title = title;
