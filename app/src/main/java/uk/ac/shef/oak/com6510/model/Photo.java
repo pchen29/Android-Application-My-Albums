@@ -1,25 +1,27 @@
 package uk.ac.shef.oak.com6510.model;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 
-public class Photo {
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
+@Entity(indices={@Index(value={"name"})})
+public class Photo {
+    @PrimaryKey(autoGenerate = true)
     private String name;
+
     private String title;
     private String date;
     private String time;
     private Location location;
     private String temperature;
     private String pressure;
+    private Bitmap photo;
     private String photoUrl;
 
-    public Photo(String title,String photoUrl){
-        this.title = title;
-        this.photoUrl = photoUrl;
-    }
-
-    public Photo(String name, String title, String date, String time, Location location,
-                 String temperature, String pressure, String photoUrl){
+    public Photo(String name,String title, String date, String time, Location location, String temperature, Bitmap photo, String pressure, String photoUrl){
         this.name = name;
         this.title = title;
         this.date = date;
@@ -27,7 +29,9 @@ public class Photo {
         this.location = location;
         this.temperature = temperature;
         this.pressure = pressure;
+        this.photo = photo;
         this.photoUrl = photoUrl;
+
     }
 
     public void setName(String name){
@@ -58,9 +62,11 @@ public class Photo {
         this.pressure = pressure;
     }
 
-    public void setPhotoUrl(String photo) {
-        this.photoUrl = photoUrl;
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
     }
+
+    public void setPhotoUrl(String photoUrl){this.photoUrl = photoUrl;}
 
     public String getName(){
         return name;
@@ -74,8 +80,8 @@ public class Photo {
         return date;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public Bitmap getPhoto() {
+        return photo;
     }
 
     public String getTime(){
@@ -93,5 +99,7 @@ public class Photo {
     public String getPressure(){
         return pressure;
     }
+
+    public String getPhotoUrl(){ return photoUrl;}
 
 }

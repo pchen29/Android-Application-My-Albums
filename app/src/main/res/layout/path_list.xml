@@ -22,7 +22,6 @@
             android:layout_height="?actionBarSize">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/frameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">

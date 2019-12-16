@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import uk.ac.shef.oak.com6510.model.Photo;
 
 public class PhotoViewModel extends ViewModel {
     public MutableLiveData<List<Photo>> photoList;

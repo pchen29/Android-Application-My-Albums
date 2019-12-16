@@ -19,7 +19,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import uk.ac.shef.oak.com6510.R;
 import uk.ac.shef.oak.com6510.databinding.PhotoDetailsBinding;
-import uk.ac.shef.oak.com6510.model.Photo;
 import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 
 public class ShowPhotoActivity extends AppCompatActivity implements OnMapReadyCallback {

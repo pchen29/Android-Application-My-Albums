@@ -1,7 +1,6 @@
 package uk.ac.shef.oak.com6510.view;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -15,7 +14,6 @@ import java.util.List;
 import uk.ac.shef.oak.com6510.R;
 import uk.ac.shef.oak.com6510.adapter.PhotoAdapter;
 import uk.ac.shef.oak.com6510.databinding.PhotoListBinding;
-import uk.ac.shef.oak.com6510.model.Photo;
 import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 
 public class PhotoActivity extends AppCompatActivity {

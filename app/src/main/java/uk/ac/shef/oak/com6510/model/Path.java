@@ -1,17 +1,26 @@
 package uk.ac.shef.oak.com6510.model;
 
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
 import java.io.File;
+
+//用path来索引  unique属性设置为true来实现唯一性 ,unique = true
+@Entity(indices={@Index(value={"title"})})
 public class Path {
+    //表示该字段是主键 (autoGenerate = true) 表示自增加
+    @PrimaryKey(autoGenerate = true)
+    private String title;
 
-    String title;
-    String imageUrl;
-    String date;
-    String time;
-    File file = null;
+    private int image = -1;
+    private String date;
+    private  String time;
+    private  File file = null;
 
-    public Path(String title, String image, String date, String time){
+    public Path(String title, int image, String date, String time){
         this.title = title;
-        this.imageUrl = imageUrl;
+        this.image = image;
         this.date = date;
         this.time = time;
     }
@@ -20,8 +29,8 @@ public class Path {
         this.title = title;
     }
 
-    public void setImageUrl(String image){
-        this.imageUrl = imageUrl;
+    public void setImage(int image){
+        this.image = image;
     }
 
     public void setDate(String date){
@@ -32,8 +41,8 @@ public class Path {
         this.time = time;
     }
 
-    public String getImageUrl(){
-        return imageUrl;
+    public int getImage(){
+        return image;
     }
 
     public String getTitle(){
