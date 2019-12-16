@@ -21,7 +21,13 @@ public class Photo {
     private Bitmap photo;
     private String photoUrl;
 
-    public Photo(String name,String title, String date, String time, Location location, String temperature, Bitmap photo, String pressure, String photoUrl){
+
+    public Photo(String title){
+        this.title = title;
+    }
+
+    public Photo(String name,String title, String date, String time, Location location,
+                 String temperature, Bitmap photo, String pressure, String photoUrl){
         this.name = name;
         this.title = title;
         this.date = date;
