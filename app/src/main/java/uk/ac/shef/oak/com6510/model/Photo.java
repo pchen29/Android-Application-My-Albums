@@ -1,31 +1,31 @@
 package uk.ac.shef.oak.com6510.model;
 
-import android.graphics.Bitmap;
-import android.location.Location;
-
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(indices={@Index(value={"name"})})
+@Entity(indices={@Index(value = "name")})
 public class Photo {
     @PrimaryKey(autoGenerate = true)
+    private int id;
+
     private String name;
     private String title;
+
     private String date;
     private String time;
-    private Location location;
+
+    private double longitude;
+    private double latitude;
+
     private String temperature;
     private String pressure;
-    private Bitmap photo;
     private String photoUrl;
 
-    public Photo(String title){
-        this.title = title;
-    }
-
-    public Photo(String name,String title, String date, String time, Location location,
-                 String temperature, Bitmap photo, String pressure, String photoUrl){
+    /*public Photo(String id, String name,String title, String date, String time, Location location,
+                 String temperature, String pressure, String photoUrl){
         this.name = name;
         this.title = title;
         this.date = date;
@@ -33,10 +33,11 @@ public class Photo {
         this.location = location;
         this.temperature = temperature;
         this.pressure = pressure;
-        this.photo = photo;
         this.photoUrl = photoUrl;
 
-    }
+    }*/
+
+    public void setId(int id){this.id = id;}
 
     public void setName(String name){
         this.name = name;
@@ -54,8 +55,12 @@ public class Photo {
         this.time = time;
     }
 
-    public void setLocation(Location location){
-        this.location = location;
+    public void setLongitude(double longitude){
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(double latitude){
+        this.latitude = latitude;
     }
 
     public void setTemperature(String temperature){
@@ -66,11 +71,11 @@ public class Photo {
         this.pressure = pressure;
     }
 
-    public void setPhoto(Bitmap photo) {
-        this.photo = photo;
-    }
-
     public void setPhotoUrl(String photoUrl){this.photoUrl = photoUrl;}
+
+    public int getId(){
+        return id;
+    }
 
     public String getName(){
         return name;
@@ -84,16 +89,16 @@ public class Photo {
         return date;
     }
 
-    public Bitmap getPhoto() {
-        return photo;
-    }
-
     public String getTime(){
         return time;
     }
 
-    public Location getLocation(){
-        return location;
+    public double getLongitude(){
+        return longitude;
+    }
+
+    public double getLatitude(){
+        return latitude;
     }
 
     public String getTemperature(){

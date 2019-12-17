@@ -52,13 +52,14 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
         Photo photo = list.get(position);
         viewHolder.binding.setPhotoItem(photo);
         final String url = photo.getPhotoUrl();
+        final String name = photo.getName();
 
         // item clickListener
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ShowPhotoActivity.class);
-                intent.putExtra("url", url);
+                intent.putExtra("name", name);
                 context.startActivity(intent);
             }
         });

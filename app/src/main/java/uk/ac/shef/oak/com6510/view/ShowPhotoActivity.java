@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import uk.ac.shef.oak.com6510.R;
 import uk.ac.shef.oak.com6510.databinding.PhotoDetailsBinding;
+import uk.ac.shef.oak.com6510.model.Photo;
 import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 
 public class ShowPhotoActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -42,12 +43,13 @@ public class ShowPhotoActivity extends AppCompatActivity implements OnMapReadyCa
 
         pViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
         imageView = (ImageView)findViewById(R.id.photo_img);
-        photoItem = pViewModel.getPhotoItem(imageView, b.getString("url"));
+        photoItem = pViewModel.getPhotoItem(b.getString("name"));
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ShowPhotoActivity.this, LargePhotoActivity.class);
+                intent.putExtra("name", photoItem.getValue().getName());
                 startActivity(intent);
             }
         });

@@ -6,8 +6,11 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import uk.ac.shef.oak.com6510.R;
+import uk.ac.shef.oak.com6510.model.Photo;
 import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 
 public class LargePhotoActivity extends AppCompatActivity {
@@ -21,9 +24,11 @@ public class LargePhotoActivity extends AppCompatActivity {
         setContentView(R.layout.item_large_photo);
 
         Bundle b = getIntent().getExtras();
-        pViewModel = new PhotoViewModel();
+
+        ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication());
+        pViewModel = ViewModelProviders.of(this,factory).get(PhotoViewModel.class);
         view = (ImageView) findViewById(R.id.photo_large);
-        photo = pViewModel.getPhotoItem(view, b.getString("url"));
+        photo = pViewModel.getPhotoItem(b.getString("name"));
         Uri uri = Uri.parse(photo.getValue().getPhotoUrl());
         view.setImageURI(uri);
 

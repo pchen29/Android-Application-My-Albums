@@ -1,36 +1,37 @@
 package uk.ac.shef.oak.com6510.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.io.File;
-
 //用path来索引  unique属性设置为true来实现唯一性 ,unique = true
-@Entity(indices={@Index(value={"title"})})
+@Entity(indices={@Index(value={"title"}, unique = true)})
 public class Path {
-    //表示该字段是主键 (autoGenerate = true) 表示自增加
-    @PrimaryKey(autoGenerate = true)
-    private String title;
 
-    private int image = -1;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+
+    private String title;
+    private String imageUrl;
     private String date;
     private  String time;
-    private  File file = null;
 
-    public Path(String title, int image, String date, String time){
+   /* public Path(String title, String imageUrl, String date, String time){
         this.title = title;
-        this.image = image;
+        this.imageUrl = imageUrl;
         this.date = date;
         this.time = time;
-    }
+    }*/
+
+    public void setId(int id){this.id = id;}
 
     public void setTitle(String title){
         this.title = title;
     }
 
-    public void setImage(int image){
-        this.image = image;
+    public void setImageUrl(String imageUrl){
+        this.imageUrl = imageUrl;
     }
 
     public void setDate(String date){
@@ -41,8 +42,10 @@ public class Path {
         this.time = time;
     }
 
-    public int getImage(){
-        return image;
+    public int getId(){return id;}
+
+    public String getImageUrl(){
+        return imageUrl;
     }
 
     public String getTitle(){
@@ -57,9 +60,4 @@ public class Path {
         return time;
     }
 
-    public File getFile() {return file; }
-
-    public Path(File fileX) {
-        file= fileX;
-    }
 }

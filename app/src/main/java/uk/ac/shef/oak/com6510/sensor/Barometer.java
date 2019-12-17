@@ -20,6 +20,7 @@ public class Barometer {
     private long timePhoneWasLastRebooted = 0;
     private long BAROMETER_READING_FREQUENCY= 30000;
     private long lastReportTime = 0;
+    private float pressureValue;
 
     public Barometer(Context context) {
         SystemClock.elapsedRealtime();
@@ -29,6 +30,14 @@ public class Barometer {
         // get a Barometer Sensor, according to the object of SensorManager
         mBarometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
         initBarometerListener();
+    }
+
+    public float getPressureValue(){
+        return pressureValue;
+    }
+
+    private void setPressureValue(float p){
+        pressureValue = p;
     }
 
     // initialize the barometer sensor listener
@@ -45,7 +54,7 @@ public class Barometer {
                     long diff = event.timestamp - lastReportTime;
                     if (diff >= mSamplingRateNano) {
                         long actualTimeInMseconds = timePhoneWasLastRebooted + (long) (event.timestamp / 1000000.0);
-                        float pressureValue = event.values[0];
+                        setPressureValue(event.values[0]);
                         int accuracy = event.accuracy;
                         lastReportTime = event.timestamp;
                     }

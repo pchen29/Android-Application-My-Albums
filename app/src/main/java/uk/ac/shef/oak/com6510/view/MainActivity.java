@@ -2,15 +2,15 @@ package uk.ac.shef.oak.com6510.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     public  PathViewModel pViewModel;
     private PathListBinding binding;
     public RecyclerView.Adapter pAdapter;
+    public RecyclerView recyclerView;
     public MutableLiveData<List<Path>> pathList;
     private FloatingActionButton mButton;
 
@@ -38,15 +39,22 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.path_list);
         binding.setLifecycleOwner(this);
 
-        pViewModel = ViewModelProviders.of(this).get(PathViewModel.class);
+        ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
+        pViewModel = ViewModelProviders.of(this,factory).get(PathViewModel.class);
         pathList = pViewModel.getPathList();
-        binding.setPath(pViewModel);
+        if(pathList != null){
+            binding.setPath(pViewModel);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        binding.pathList.setLayoutManager(layoutManager);
-        pAdapter = new PathAdapter(this, pathList.getValue());
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            binding.pathList.setLayoutManager(layoutManager);
+            pAdapter = new PathAdapter(this, pathList.getValue());
 
-        binding.pathList.setAdapter(pAdapter);
+            binding.pathList.setAdapter(pAdapter);
+        }else{
+            //recyclerView = (RecyclerView)findViewById(R.id.path_list);
+            //recyclerView.setVisibility(View.INVISIBLE);
+        }
+
 
         // add a click event
         mButton = (FloatingActionButton) findViewById(R.id.add_button);

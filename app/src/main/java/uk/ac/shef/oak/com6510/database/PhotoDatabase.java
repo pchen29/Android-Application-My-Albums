@@ -1,4 +1,4 @@
-package uk.ac.shef.oak.com6510.model;
+package uk.ac.shef.oak.com6510.database;
 
 
 import android.content.Context;
@@ -8,10 +8,15 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import uk.ac.shef.oak.com6510.Dao.PathDAO;
+import uk.ac.shef.oak.com6510.model.Path;
+import uk.ac.shef.oak.com6510.model.Photo;
+import uk.ac.shef.oak.com6510.Dao.PhotoDAO;
+
 @Database(entities = {Photo.class}, version = 1, exportSchema = false)
 public abstract class PhotoDatabase extends RoomDatabase {
-    public abstract PhotoDAO photoDao();
 
+    public abstract PhotoDAO photoDao();
     // marking the instance as volatile to ensure atomic access to the variable
     private static volatile PhotoDatabase INSTANCE;
 
@@ -20,7 +25,7 @@ public abstract class PhotoDatabase extends RoomDatabase {
             synchronized (PhotoDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            PhotoDatabase.class, "photo_database")
+                            PhotoDatabase.class, "Photo")
                             // Wipes and rebuilds instead of migrating if no Migration object.
                             // Migration is not part of this codelab.
                             .fallbackToDestructiveMigration()

@@ -14,11 +14,22 @@ public class TemperatureSensor {
     private SensorManager mSensorManager;
     private Sensor mTemperatureSensor;
 
+    private float temperatureValue;
+
     public TemperatureSensor(Context context) {
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         // get a Temperature Sensor, according to the object of SensorManager
         mTemperatureSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         initTempSensorListener();
+    }
+
+
+    public float getTemperatureValue(){
+        return temperatureValue;
+    }
+
+    private void setTemperatureValue(float t){
+        temperatureValue = t;
     }
 
     // initialize the temperature sensor listener
@@ -30,7 +41,7 @@ public class TemperatureSensor {
             mTemperatureListener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
-                    float temperatureValue = event.values[0];
+                    setTemperatureValue(event.values[0]);
                     int accuracy = event.accuracy;
                 }
                 @Override
@@ -45,19 +56,17 @@ public class TemperatureSensor {
     }
 
     // starts the temperature monitoring
-    public void startSensingPressure() {
+    public void startSensingTemperatureSensor() {
         if (mTemperatureSensor != null) {
             Log.d("Standard Barometer", "starting listener");
 
-            // delay is in microseconds (1 millisecond = 1000 microseconds)
-            // it does not seem to work though
             mSensorManager.registerListener(mTemperatureListener, mTemperatureSensor, SensorManager.SENSOR_DELAY_NORMAL);
             Log.i(TAG, "barometer unavailable or already active");
         }
     }
 
     // stops the temperature monitoring
-    public void stopBarometer() {
+    public void stopTemperatureSensor() {
         if (mTemperatureSensor != null) {
             Log.d(TAG, "Stopping listener");
             try {

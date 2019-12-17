@@ -43,6 +43,7 @@
             android:id="@+id/path_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="visible"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
             <!-- make the recycle below the toolbar -->
 
@@ -74,6 +75,7 @@
                 app:fabSize="auto"
                 app:layout_constraintEnd_toEndOf="@id/guideline_ver"
                 app:layout_constraintTop_toTopOf="@id/guideline_hor"
+                android:src="@drawable/baseline_add_white_18dp"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
