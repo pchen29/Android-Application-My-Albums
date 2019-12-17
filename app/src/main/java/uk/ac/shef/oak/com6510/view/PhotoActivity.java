@@ -31,16 +31,20 @@ public class PhotoActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
 
         binding = DataBindingUtil.setContentView(this, R.layout.photo_list);
+
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this,factory).get(PhotoViewModel.class);
+
         photoList = pViewModel.getPhotoList(b.getString("title"));
+        if(photoList != null){
 
-        binding.setPhotos(pViewModel);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        binding.photoList.setLayoutManager(layoutManager);
-        pAdapter = new PhotoAdapter(this, photoList.getValue());
-        binding.photoList.setAdapter(pAdapter);
+            binding.setPhotos(pViewModel);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            binding.photoList.setLayoutManager(layoutManager);
+            pAdapter = new PhotoAdapter(this, photoList.getValue());
+            binding.photoList.setAdapter(pAdapter);
 
+        }
     }
 
 }

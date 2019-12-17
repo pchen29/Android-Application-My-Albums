@@ -36,13 +36,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.path_list);
-        binding.setLifecycleOwner(this);
-
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this,factory).get(PathViewModel.class);
         pathList = pViewModel.getPathList();
+
         if(pathList != null){
+            binding = DataBindingUtil.setContentView(this, R.layout.path_list);
+            binding.setLifecycleOwner(this);
             binding.setPath(pViewModel);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -51,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
             binding.pathList.setAdapter(pAdapter);
         }else{
-            //recyclerView = (RecyclerView)findViewById(R.id.path_list);
-            //recyclerView.setVisibility(View.INVISIBLE);
+            setContentView(R.layout.path_list);
         }
 
 

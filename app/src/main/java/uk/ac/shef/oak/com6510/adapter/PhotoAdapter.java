@@ -51,7 +51,6 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
         // dataBinding绑定
         Photo photo = list.get(position);
         viewHolder.binding.setPhotoItem(photo);
-        final String url = photo.getPhotoUrl();
         final String name = photo.getName();
 
         // item clickListener

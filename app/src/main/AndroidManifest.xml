@@ -23,18 +23,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.android.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
-        </provider>
-
-
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".view.NewPathActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,11 +31,10 @@
             </intent-filter>
         </activity>
 
-
         <activity android:name=".view.ShowPhotoActivity"></activity>
         <activity android:name=".view.PhotoActivity"></activity>
         <activity android:name=".view.LargePhotoActivity"></activity>
-        <activity android:name=".view.NewPathActivity"></activity>
+        <activity android:name=".view.MainActivity"></activity>
         <activity android:name=".view.MapActivity"></activity>
 
     </application>
