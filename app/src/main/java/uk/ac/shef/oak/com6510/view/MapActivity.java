@@ -76,7 +76,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private FloatingActionButton fab;
     private EasyImage easyImage;
     private String title;
-    private String name;
     private Barometer mBarometer;
     private TemperatureSensor mTemperatureSensor;
 
@@ -118,7 +117,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mapFragment.getMapAsync(this);
 
         checkPermissions(getApplicationContext());
-        name = setImageName();
 
         // initialize easyImage
         easyImage = new EasyImage.Builder(this)

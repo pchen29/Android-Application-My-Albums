@@ -66,6 +66,7 @@ public class NewPathActivity extends AppCompatActivity {
                 intent.setClass(NewPathActivity.this,MapActivity.class);
                 intent.putExtra("title",title);
                 startActivity(intent);
+                finish();
             }
         });
     }

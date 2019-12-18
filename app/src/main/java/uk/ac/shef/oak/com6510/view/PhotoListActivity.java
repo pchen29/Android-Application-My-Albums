@@ -52,6 +52,7 @@ public class PhotoListActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MapActivity.class);
             intent.putExtra("title", title);
             startActivity(intent);
+            finish();
         }
     }
 

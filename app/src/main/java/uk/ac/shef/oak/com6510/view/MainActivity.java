@@ -37,44 +37,62 @@ public class MainActivity extends AppCompatActivity {
         pViewModel = ViewModelProviders.of(this,factory).get(PathViewModel.class);
         pathList = pViewModel.getPathList();
 
+
         if(pathList.getValue().size() != 0){
-            PathListBinding binding = DataBindingUtil.setContentView(this, R.layout.path_list);
-            binding.setLifecycleOwner(this);
-            binding.setPath(pViewModel);
-
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            binding.pathList.setLayoutManager(layoutManager);
-            RecyclerView.Adapter pAdapter = new PathAdapter(this, pathList.getValue());
-            binding.pathList.setAdapter(pAdapter);
-
+            showData(pViewModel,pathList);
             // add a click event
             mButton = (FloatingActionButton) findViewById(R.id.add_button);
-            mButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent();
-                    // jump to NewPathActivity from MainActivity
-                    intent.setClass(MainActivity.this, NewPathActivity.class);
-                    startActivity(intent);
-                }
-            });
+            clickFab(mButton);
 
         }else{
             setContentView(R.layout.empty_list);
-
             // add a click event
             mButton = (FloatingActionButton) findViewById(R.id.add_button);
-            mButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent();
-                    // jump to NewPathActivity from MainActivity
-                    intent.setClass(MainActivity.this, NewPathActivity.class);
-                    startActivity(intent);
-                }
-            });
+            clickFab(mButton);
         }
 
 
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
+        pViewModel = ViewModelProviders.of(this,factory).get(PathViewModel.class);
+        pathList = pViewModel.getPathList();
+        showData(pViewModel,pathList);
+
+        mButton = (FloatingActionButton) findViewById(R.id.add_button);
+        clickFab(mButton);
+    }
+
+    /**
+     * click event for add button
+     *
+     */
+    private void clickFab(FloatingActionButton mButton){
+        mButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, NewPathActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+
+    /**
+     * binding data and show list
+      */
+    private void showData(PathViewModel pViewModel, MutableLiveData<List<Path>> pathList){
+        PathListBinding binding = DataBindingUtil.setContentView(this, R.layout.path_list);
+        binding.setLifecycleOwner(this);
+        binding.setPath(pViewModel);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.pathList.setLayoutManager(layoutManager);
+        RecyclerView.Adapter pAdapter = new PathAdapter(this, pathList.getValue());
+        binding.pathList.setAdapter(pAdapter);
     }
 }
