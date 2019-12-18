@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -23,11 +26,18 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -73,6 +83,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private boolean mLocationPermissionGranted;
     private Location mLastKnownLocation;
     private GoogleMap mMap;
+    private LocationCallback locationCallback;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
 
@@ -82,6 +93,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_map);
         Bundle b = getIntent().getExtras();
+
         title = b.getString("title");
 
         // sensors
@@ -90,6 +102,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        locationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                mLastKnownLocation = locationResult.getLastLocation();
+                moveToPoint(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude()));
+            }
+        };
+        startLocationUpdates();
 
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
@@ -142,16 +162,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         easyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
             public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
                 onPhotosReturned(imageFiles);
             }
+
             @Override
             public void onImagePickerError(@NonNull Throwable error, @NonNull MediaSource source) {
                 //Some error handling
                 error.printStackTrace();
             }
+
             @Override
             public void onCanceled(@NonNull MediaSource source) {
                 //Not necessary to remove any files manually anymore
@@ -255,6 +278,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         String[] necessaryPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
         if (arePermissionsGranted(necessaryPermissions)) {
             Log.i("msg","have permission");
@@ -264,6 +288,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             requestPermissionsCompat(necessaryPermissions, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
         getDeviceLocation();
+
     }
 
     /**
@@ -284,9 +309,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                         mLastKnownLocation = location;
                         mark(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude(),"Your Position");
                         final LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
-                        mMap.clear();
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, NEARBY_ZOOM));
+                        moveToPoint(latLng);
                     }
                 });
             }
@@ -348,4 +371,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         Log.i("msg","add marker on "+latitude+","+longitude);
 
     }
+
+    private void startLocationUpdates() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(20000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        mFusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                locationCallback,
+                null /* Looper */);
+    }
+
+    private void moveToPoint(LatLng latLng){
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng)
+                .zoom(DEFAULT_ZOOM)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
 }
