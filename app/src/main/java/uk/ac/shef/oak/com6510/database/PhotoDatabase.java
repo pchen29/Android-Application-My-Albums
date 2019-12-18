@@ -22,7 +22,7 @@ public abstract class PhotoDatabase extends RoomDatabase {
             synchronized (PhotoDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            PhotoDatabase.class, "Photo")
+                            PhotoDatabase.class, "Photo_DB")
                             .fallbackToDestructiveMigration()
                             .addCallback(sRoomDatabaseCallback)
                             .build();

@@ -23,7 +23,7 @@ public abstract class PathDatabase extends RoomDatabase {
             synchronized (PhotoDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            PathDatabase.class, "Path")
+                            PathDatabase.class, "Path_DB")
                             .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()
                             .addCallback(sRoomDatabaseCallback)

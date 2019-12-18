@@ -2,6 +2,7 @@ package uk.ac.shef.oak.com6510.viewModel;
 
 import android.app.Application;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -15,41 +16,36 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import uk.ac.shef.oak.com6510.Dao.PathDAO;
 import uk.ac.shef.oak.com6510.Dao.PhotoDAO;
+import uk.ac.shef.oak.com6510.Repository.PhotoRepository;
 import uk.ac.shef.oak.com6510.database.PhotoDatabase;
+import uk.ac.shef.oak.com6510.model.Path;
 import uk.ac.shef.oak.com6510.model.Photo;
 
 public class PhotoViewModel extends AndroidViewModel {
     private MutableLiveData<List<Photo>> photoList;
-    private MutableLiveData<String> photoUrl;
     private MutableLiveData<Photo> photoItem;
-
-    public MutableLiveData<List<Location>> locationList;
-    private PhotoDatabase photoDatabase;
-    private PhotoDAO photoDAO;
+    private PhotoRepository photoRepository;
 
     public PhotoViewModel(Application application){
         super(application);
-        photoDatabase = PhotoDatabase.getDatabase(application);
-        photoDAO = photoDatabase.photoDao();
+        photoRepository = new PhotoRepository(application);
     }
 
     public MutableLiveData<List<Photo>> getPhotoList(String title){
-
-        if(photoList == null){
-            photoList = new MutableLiveData<List<Photo>>();
-            photoList.setValue(photoDAO.findPhotoByTitle(title).getValue());
-        }
+        photoList = photoRepository.getPhotoList(title);
         return photoList;
     }
 
     public MutableLiveData<Photo> getPhotoItem(String name){
-        if(photoItem == null){
-            photoItem = new MutableLiveData<Photo>();
-            photoItem.setValue(photoDAO.findPhotoByName(name));
-            Log.d("msg","get photo list from DB");
-        }
+        photoItem = photoRepository.getPhotoItem(name);
         return photoItem;
+    }
+
+    public void insertPhoto(final Photo photo){
+        photoRepository.insertPhoto(photo);
+        Log.d("msg","insert a new photo to DB");
     }
 
     @BindingAdapter({"imageUrl"})
@@ -60,15 +56,4 @@ public class PhotoViewModel extends AndroidViewModel {
                 centerCrop().
                 into(view);
     }
-
-    public void insertPhoto(final Photo photo){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                photoDAO.insert(photo);
-                Log.d("msg","insert a new photo to DB");
-            }
-        }).start();
-    }
-
 }

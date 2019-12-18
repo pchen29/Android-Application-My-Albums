@@ -18,30 +18,32 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
-            <ImageView
+           <!-- <ImageView
                 android:id="@+id/image_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
-                app:imageUrl="@{pathItem.imageUrl}"/>
+                app:imageUrl="@{pathItem.imageUrl}"/>-->
 
             <TextView
                 android:id="@+id/path_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
+                android:textSize="24sp"
                 android:layout_gravity="left"
-                android:text="@{pathItem.title?? @string/path_title}"
+                android:text="@{pathItem.title}"
+                android:gravity="bottom"
                 />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                >
 
                 <TextView
                     android:id="@+id/path_date"
@@ -49,17 +51,20 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:layout_weight="1"
-                    android:text="@{pathItem.date?? @string/path_date}"
+                    android:textSize="18sp"
+                    android:text="@{pathItem.date}"
+                    android:gravity="bottom"
                     />
 
                 <TextView
                     android:id="@+id/path_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:gravity="right"
                     android:layout_weight="1"
-                    android:text="@{pathItem.time?? @string/path_time}"
+                    android:layout_gravity="right"
+                    android:gravity="right|bottom"
+                    android:textSize="18sp"
+                    android:text="@{pathItem.time}"
                     />
 
             </LinearLayout>

@@ -1,11 +1,10 @@
 package uk.ac.shef.oak.com6510.model;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-//用path来索引  unique属性设置为true来实现唯一性 ,unique = true
+
 @Entity(indices={@Index(value={"title"}, unique = true)})
 public class Path {
 
@@ -13,7 +12,7 @@ public class Path {
     private int id;
 
     private String title;
-    private String imageUrl;
+    //private String imageUrl;
     private String date;
     private  String time;
 
@@ -30,9 +29,9 @@ public class Path {
         this.title = title;
     }
 
-    public void setImageUrl(String imageUrl){
+    /*public void setImageUrl(String imageUrl){
         this.imageUrl = imageUrl;
-    }
+    }*/
 
     public void setDate(String date){
         this.date = date;
@@ -44,9 +43,9 @@ public class Path {
 
     public int getId(){return id;}
 
-    public String getImageUrl(){
+    /*public String getImageUrl(){
         return imageUrl;
-    }
+    }*/
 
     public String getTitle(){
         return title;

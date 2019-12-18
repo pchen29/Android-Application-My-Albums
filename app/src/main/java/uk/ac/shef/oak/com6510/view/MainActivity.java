@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         pViewModel = ViewModelProviders.of(this,factory).get(PathViewModel.class);
         pathList = pViewModel.getPathList();
 
-        if(pathList != null){
+        if(pathList.getValue().size() != 0){
             PathListBinding binding = DataBindingUtil.setContentView(this, R.layout.path_list);
             binding.setLifecycleOwner(this);
             binding.setPath(pViewModel);
@@ -46,19 +46,35 @@ public class MainActivity extends AppCompatActivity {
             binding.pathList.setLayoutManager(layoutManager);
             RecyclerView.Adapter pAdapter = new PathAdapter(this, pathList.getValue());
             binding.pathList.setAdapter(pAdapter);
+
+            // add a click event
+            mButton = (FloatingActionButton) findViewById(R.id.add_button);
+            mButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    // jump to NewPathActivity from MainActivity
+                    intent.setClass(MainActivity.this, NewPathActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+        }else{
+            setContentView(R.layout.empty_list);
+
+            // add a click event
+            mButton = (FloatingActionButton) findViewById(R.id.add_button);
+            mButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    // jump to NewPathActivity from MainActivity
+                    intent.setClass(MainActivity.this, NewPathActivity.class);
+                    startActivity(intent);
+                }
+            });
         }
 
-        // add a click event
-        mButton = (FloatingActionButton) findViewById(R.id.add_button);
-        mButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                // jump to NewPathActivity from MainActivity
-                intent.setClass(MainActivity.this, NewPathActivity.class);
-                startActivity(intent);
-            }
-        });
 
     }
 }

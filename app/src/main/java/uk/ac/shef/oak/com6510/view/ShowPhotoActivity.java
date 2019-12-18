@@ -37,6 +37,7 @@ public class ShowPhotoActivity extends AppCompatActivity implements OnMapReadyCa
         setContentView(R.layout.photo_details);
 
         Bundle b = getIntent().getExtras();
+        name = b.getString("name");
 
         binding = DataBindingUtil.setContentView(this, R.layout.photo_details);
         binding.setLifecycleOwner(this);

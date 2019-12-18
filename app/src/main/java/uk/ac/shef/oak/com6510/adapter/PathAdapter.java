@@ -21,8 +21,6 @@ public class PathAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     static private Context context;
     private List<Path> list;
-    private static final int VIEW_TYPE_EMPTY = 0;
-    public static final int VIEW_TYPE = 1;
 
     public static class ViewHolder extends RecyclerView.ViewHolder  {
         ItemPathBinding binding;
@@ -45,23 +43,11 @@ public class PathAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (list.size() <= 0) {
-            return VIEW_TYPE_EMPTY;
-        }
-        return VIEW_TYPE;
-    }
-
-    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //Inflate the layout, initialize the View Holder
-        Log.e("viewType",""+viewType);
-        if(viewType == 0) {
-            ItemPathBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
+        ItemPathBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
                     R.layout.item_path, parent, false);
-            return new ViewHolder((binding));
-        }
-        return new EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.empty_list, parent, false));
+        return new ViewHolder((binding));
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
@@ -57,11 +58,12 @@ public class NewPathActivity extends AppCompatActivity {
                 // insert new path to database
                 Path path = new Path();
                 path.setTitle(title);
+                Log.d("time",timeStamp);
                 path.setDate(timeStamp.substring(0,9));
                 path.setTime(timeStamp.substring(11,15));
-                //pViewModel.insertData(path);
-
-                File file = new File(directory, title);
+                Log.d("time",timeStamp.substring(0,10));
+                Log.d("time",timeStamp.substring(11,16));
+                //pViewModel.insertPath(path);
 
                 Intent intent = new Intent();
                 intent.setClass(NewPathActivity.this,MapActivity.class);
