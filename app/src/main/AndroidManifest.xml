@@ -31,8 +31,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.ShowPhotoActivity"></activity>
-        <activity android:name=".view.PhotoActivity"></activity>
+        <activity android:name=".view.PhotoDetailsActivity"></activity>
+        <activity android:name=".view.PhotoListActivity"></activity>
         <activity android:name=".view.LargePhotoActivity"></activity>
         <activity android:name=".view.NewPathActivity"></activity>
         <activity android:name=".view.MapActivity"></activity>

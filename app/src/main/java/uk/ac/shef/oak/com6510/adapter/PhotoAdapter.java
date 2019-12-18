@@ -15,7 +15,7 @@ import java.util.List;
 import uk.ac.shef.oak.com6510.R;
 import uk.ac.shef.oak.com6510.databinding.ItemPhotoBinding;
 import uk.ac.shef.oak.com6510.model.Photo;
-import uk.ac.shef.oak.com6510.view.ShowPhotoActivity;
+import uk.ac.shef.oak.com6510.view.PhotoDetailsActivity;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>{
 
@@ -57,7 +57,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ShowPhotoActivity.class);
+                Intent intent = new Intent(context, PhotoDetailsActivity.class);
                 intent.putExtra("name", name);
                 context.startActivity(intent);
             }
@@ -70,7 +70,9 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
     }
 
     public int getItemCount() {
-        return list.size();
+        if(list.size() != 0)
+            return list.size();
+        return 0;
     }
 
     public List<Photo> getList() {
