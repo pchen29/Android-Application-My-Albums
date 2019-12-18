@@ -1,6 +1,5 @@
-package uk.ac.shef.oak.com6510.Repository;
+package uk.ac.shef.oak.com6510.repository;
 
-import android.app.Activity;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;

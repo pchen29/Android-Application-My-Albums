@@ -1,6 +1,8 @@
 package uk.ac.shef.oak.com6510.view;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -29,13 +31,16 @@ public class PhotoListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle b = getIntent().getExtras();
+        String title = b.getString("title");
 
         binding = DataBindingUtil.setContentView(this, R.layout.photo_list);
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this,factory).get(PhotoViewModel.class);
+        photoList = pViewModel.getPhotoList(title);
+        Log.d("title",title);
 
-        photoList = pViewModel.getPhotoList(b.getString("title"));
-        if(photoList != null){
+        if(photoList.getValue() != null){
+            Log.d("size", ""+photoList.getValue().size());
             binding.setPhotos(pViewModel);
             GridLayoutManager layoutManager = new GridLayoutManager(this,3,
                                                                     GridLayoutManager.HORIZONTAL,false);
@@ -43,6 +48,10 @@ public class PhotoListActivity extends AppCompatActivity {
             pAdapter = new PhotoAdapter(this, photoList.getValue());
             binding.photoList.setAdapter(pAdapter);
 
+        }else{
+            Intent intent = new Intent(this, MapActivity.class);
+            intent.putExtra("title", title);
+            startActivity(intent);
         }
     }
 

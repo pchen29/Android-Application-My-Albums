@@ -70,7 +70,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
     }
 
     public int getItemCount() {
-        if(list.size() != 0)
+        if(list != null)
             return list.size();
         return 0;
     }

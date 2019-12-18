@@ -2,6 +2,7 @@ package uk.ac.shef.oak.com6510.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,25 +53,18 @@ public class PathAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
 
         ViewHolder viewHolder = (ViewHolder)holder;
-        Path path = list.get(position);
-        viewHolder.binding.setPathItem(path);
-        final String title = path.getTitle();
 
         if(list.get(position)!=null){
+            Path path = list.get(position);
+            viewHolder.binding.setPathItem(path);
+            final String title = path.getTitle();
+
             // item clickListener
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d("title", title);
                     Intent intent = new Intent(context, PhotoListActivity.class);
-                    intent.putExtra("title", title);
-                    context.startActivity(intent);
-                }
-            });
-        } else{
-            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, MapActivity.class);
                     intent.putExtra("title", title);
                     context.startActivity(intent);
                 }

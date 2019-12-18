@@ -1,32 +1,24 @@
 package uk.ac.shef.oak.com6510.viewModel;
 
 import android.app.Application;
-import android.location.Location;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.ImageView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import uk.ac.shef.oak.com6510.Dao.PathDAO;
-import uk.ac.shef.oak.com6510.Dao.PhotoDAO;
-import uk.ac.shef.oak.com6510.Repository.PhotoRepository;
-import uk.ac.shef.oak.com6510.database.PhotoDatabase;
-import uk.ac.shef.oak.com6510.model.Path;
+import uk.ac.shef.oak.com6510.repository.PhotoRepository;
 import uk.ac.shef.oak.com6510.model.Photo;
 
 public class PhotoViewModel extends AndroidViewModel {
     private MutableLiveData<List<Photo>> photoList;
     private MutableLiveData<Photo> photoItem;
     private PhotoRepository photoRepository;
+    private MutableLiveData<List<Photo>> photoAllList;
 
     public PhotoViewModel(Application application){
         super(application);
@@ -43,9 +35,13 @@ public class PhotoViewModel extends AndroidViewModel {
         return photoItem;
     }
 
+    public MutableLiveData<List<Photo>> getAllPhotos(){
+        photoAllList = photoRepository.getPhotoAllList();
+        return photoAllList;
+    }
+
     public void insertPhoto(final Photo photo){
         photoRepository.insertPhoto(photo);
-        Log.d("msg","insert a new photo to DB");
     }
 
     @BindingAdapter({"imageUrl"})

@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -39,6 +40,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import pl.aprilapps.easyphotopicker.ChooserType;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
@@ -74,10 +76,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)  {
-        Log.i("andy","map oncreate");
+        Log.i("onCreate","map oncreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_map);
         Bundle b = getIntent().getExtras();
@@ -123,6 +124,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         });
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        mBarometer.stopBarometer();
+        mTemperatureSensor.stopTemperatureSensor();
+    }
+
     /**
      * set the file name of image
      */
@@ -153,9 +161,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
         // insert a new photo to DB
-        Photo photo = new Photo();
-        photo.setTitle(title);
         for(int i=0;i<returnedPhotos.length;i++){
+
+            Photo photo = new Photo();
+            photo.setTitle(title);
             String name = returnedPhotos[0].getFile().getName();
             photo.setName(name);
             photo.setPhotoUrl(returnedPhotos[0].getFile().getAbsoluteFile().toString());
@@ -176,9 +185,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
             pViewModel.insertPhoto(photo);
         }
-        // stop sensors
-        mBarometer.stopBarometer();
-        mTemperatureSensor.stopTemperatureSensor();
     }
 
     private boolean arePermissionsGranted(String[] permissions) {
