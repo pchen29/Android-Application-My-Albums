@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,11 +25,18 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -77,19 +86,31 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
+    private static final long MIN_TIME = 400;
+    private static final float MIN_DISTANCE = 1000;
+    private LocationCallback locationCallback;
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState)  {
-        Log.i("andy","map oncreate");
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.i("andy", "map oncreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_map);
         Bundle b = getIntent().getExtras();
+
         title = b.getString("title");
         mBarometer = new Barometer(this);
         mTemperatureSensor = new TemperatureSensor(this);
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        locationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                mLastKnownLocation = locationResult.getLastLocation();
+                moveToPoint(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude()));
+            }
+        };
+        startLocationUpdates();
 
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
@@ -123,7 +144,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
     // set the file name of image
-    private String setImageName(){
+    private String setImageName() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp;
         return imageFileName;
@@ -154,20 +175,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
         Photo photo = new Photo();
         photo.setTitle(title);
-        for(int i=0;i<returnedPhotos.length;i++){
+        for (int i = 0; i < returnedPhotos.length; i++) {
             String name = returnedPhotos[0].getFile().getName();
             photo.setName(name);
             photo.setPhotoUrl(returnedPhotos[0].getFile().getAbsoluteFile().toString());
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String timeStamp = dateFormat.format(new Date());
-            String date = timeStamp.substring(0,9);
-            String time = timeStamp.substring(11,15);
+            String date = timeStamp.substring(0, 9);
+            String time = timeStamp.substring(11, 15);
             photo.setDate(date);
             photo.setTime(time);
 
             photo.setTemperature(String.valueOf(mTemperatureSensor.getTemperatureValue()) + " °C");
-            photo.setPressure(String.valueOf(mBarometer.getPressureValue())+" mbars");
+            photo.setPressure(String.valueOf(mBarometer.getPressureValue()) + " mbars");
 
             pViewModel.insertPhoto(photo);
         }
@@ -238,18 +259,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         String[] necessaryPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
         if (arePermissionsGranted(necessaryPermissions)) {
-            Log.i("andy","have permission");
+            Log.i("andy", "have permission");
             mLocationPermissionGranted = true;
         } else {
-            Log.i("andy","getting permission");
+            Log.i("andy", "getting permission");
             requestPermissionsCompat(necessaryPermissions, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
         getDeviceLocation();
 
     }
-
 
 
     /**
@@ -265,14 +286,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
                 locationResult.addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
-                    public void onSuccess(Location location){
-                        Log.i("andy","success on get locationn");
+                    public void onSuccess(Location location) {
                         mLastKnownLocation = location;
-                        mark(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude(),"Your Position");
+                        mark(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(), "Your Position");
                         final LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
-                        mMap.clear();
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, NEARBY_ZOOM));
+                        moveToPoint(latLng);
                     }
                 });
             }
@@ -294,17 +312,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.i("andy","got location permission");
+                    Log.i("andy", "got location permission");
                     mLocationPermissionGranted = true;
                 }
                 updateLocationUI();
             }
             case CAMERA_REQUEST_CODE: {
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     easyImage.openCameraForImage(MapActivity.this);
                 }
             }
-
         }
     }
 
@@ -313,25 +330,46 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
      */
     private void updateLocationUI() {
         if (mMap == null) {
-            Log.i("andy","no map");
+            Log.i("andy", "no map");
             return;
         }
         try {
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                Log.i("andy","map location enable");
+                Log.i("andy", "map location enable");
             }
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
 
-    private void mark(double latitude, double longitude, String name){
+    private void mark(double latitude, double longitude, String name) {
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(latitude, longitude))
                 .title(name));
-        Log.i("andy","add marker on "+latitude+longitude);
+        Log.i("andy", "add marker on " + latitude + longitude);
 
     }
+
+    private void startLocationUpdates() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(20000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        mFusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                locationCallback,
+                null /* Looper */);
+    }
+
+    private void moveToPoint(LatLng latLng){
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng)
+                .zoom(DEFAULT_ZOOM)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
 }
