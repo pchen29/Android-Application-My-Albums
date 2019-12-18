@@ -47,8 +47,8 @@ dependencies {
     annotationProcessor 'androidx.room:room-compiler:2.2.2'
 
     implementation 'com.github.jkwiecien:EasyImage:3.0.3'
-    compile "androidx.core:core-ktx:+"
-    compile "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
+    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
 }

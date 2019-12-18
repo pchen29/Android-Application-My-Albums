@@ -4,6 +4,7 @@ package uk.ac.shef.oak.com6510.viewModel;
 import android.app.Application;
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,11 +38,18 @@ public class PathViewModel extends AndroidViewModel {
         if (pathList == null) {
             pathList = new MutableLiveData<List<Path>>();
             pathList.setValue(pathDAO.getAllData());
+            Log.d("msg","get path list from DB");
         }
         return pathList;
     }
 
-    public void insertData(Path path){
-        pathDAO.insertPath(path);
+    public void insertData(final Path path){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                 pathDAO.insertPath(path);
+                 Log.d("msg","insert a new path to DB");
+            }
+        }).start();
     }
 }

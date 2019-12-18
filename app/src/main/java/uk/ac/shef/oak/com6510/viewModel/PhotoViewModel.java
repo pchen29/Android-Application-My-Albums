@@ -2,6 +2,7 @@ package uk.ac.shef.oak.com6510.viewModel;
 
 import android.app.Application;
 import android.location.Location;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +35,7 @@ public class PhotoViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<Photo>> getPhotoList(String title){
+
         if(photoList == null){
             photoList = new MutableLiveData<List<Photo>>();
             photoList.setValue(photoDAO.findPhotoByTitle(title).getValue());
@@ -45,6 +47,7 @@ public class PhotoViewModel extends AndroidViewModel {
         if(photoItem == null){
             photoItem = new MutableLiveData<Photo>();
             photoItem.setValue(photoDAO.findPhotoByName(name));
+            Log.d("msg","get photo list from DB");
         }
         return photoItem;
     }
@@ -58,8 +61,14 @@ public class PhotoViewModel extends AndroidViewModel {
                 into(view);
     }
 
-    public void insertPhoto(Photo photo){
-        photoDAO.insert(photo);
+    public void insertPhoto(final Photo photo){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                photoDAO.insert(photo);
+                Log.d("msg","insert a new photo to DB");
+            }
+        }).start();
     }
 
 }

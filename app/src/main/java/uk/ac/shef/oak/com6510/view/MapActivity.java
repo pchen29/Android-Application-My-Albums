@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -38,6 +39,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +56,7 @@ import uk.ac.shef.oak.com6510.sensor.Barometer;
 import uk.ac.shef.oak.com6510.sensor.TemperatureSensor;
 import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 2987;
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 7829;
@@ -63,7 +65,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final int NEARBY_ZOOM = 18;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
-    //private PhotoViewModel pViewModel;
+    private PhotoViewModel pViewModel;
     private FloatingActionButton fab;
     private EasyImage easyImage;
     private String title;
@@ -89,8 +91,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        //ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
-        //pViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
+        ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
+        pViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.path_map);
+        mapFragment.getMapAsync(this);
 
         checkPermissions(getApplicationContext());
         name = setImageName();
@@ -101,11 +107,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .setFolderName(title)
                 .allowMultiple(true)
                 .build();
-
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.path_map);
-        mapFragment.getMapAsync(this);
 
         fab = (FloatingActionButton) findViewById(R.id.take_photo_btn);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -157,25 +158,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             String name = returnedPhotos[0].getFile().getName();
             photo.setName(name);
             photo.setPhotoUrl(returnedPhotos[0].getFile().getAbsoluteFile().toString());
-            int lastIndex = name.length()-4;
-            long milliseconds = Long.parseLong(name.substring(3, lastIndex));
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-            String timeStamp = sdf.format(new Date(milliseconds));
 
-            String date = name.substring(0,9);
-            String time = name.substring(11,15);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String timeStamp = dateFormat.format(new Date());
+            String date = timeStamp.substring(0,9);
+            String time = timeStamp.substring(11,15);
             photo.setDate(date);
             photo.setTime(time);
-            Log.e("date",date);
-            Log.e("time",time);
-            photo.setTemperature(String.valueOf(mTemperatureSensor.getTemperatureValue()));
-            photo.setPressure(String.valueOf(mBarometer.getPressureValue()));
-            mBarometer.stopBarometer();
-            mTemperatureSensor.stopTemperatureSensor();
-            //pViewModel.insertPhoto(photo);
-        }
 
+            photo.setTemperature(String.valueOf(mTemperatureSensor.getTemperatureValue()) + " °C");
+            photo.setPressure(String.valueOf(mBarometer.getPressureValue())+" mbars");
+
+            pViewModel.insertPhoto(photo);
+        }
+        mBarometer.stopBarometer();
+        mTemperatureSensor.stopTemperatureSensor();
     }
+
 
     private boolean arePermissionsGranted(String[] permissions) {
         for (String permission : permissions) {
