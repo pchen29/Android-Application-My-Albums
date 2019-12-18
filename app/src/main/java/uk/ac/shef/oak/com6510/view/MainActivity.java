@@ -26,9 +26,6 @@ import uk.ac.shef.oak.com6510.viewModel.PathViewModel;
 public class MainActivity extends AppCompatActivity {
 
     public  PathViewModel pViewModel;
-    private PathListBinding binding;
-    public RecyclerView.Adapter pAdapter;
-    public RecyclerView recyclerView;
     public MutableLiveData<List<Path>> pathList;
     private FloatingActionButton mButton;
 
@@ -41,19 +38,15 @@ public class MainActivity extends AppCompatActivity {
         pathList = pViewModel.getPathList();
 
         if(pathList != null){
-            binding = DataBindingUtil.setContentView(this, R.layout.path_list);
+            PathListBinding binding = DataBindingUtil.setContentView(this, R.layout.path_list);
             binding.setLifecycleOwner(this);
             binding.setPath(pViewModel);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             binding.pathList.setLayoutManager(layoutManager);
-            pAdapter = new PathAdapter(this, pathList.getValue());
-
+            RecyclerView.Adapter pAdapter = new PathAdapter(this, pathList.getValue());
             binding.pathList.setAdapter(pAdapter);
-        }else{
-            setContentView(R.layout.path_list);
         }
-
 
         // add a click event
         mButton = (FloatingActionButton) findViewById(R.id.add_button);

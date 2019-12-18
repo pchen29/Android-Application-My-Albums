@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +22,6 @@ import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 public class PhotoActivity extends AppCompatActivity {
     public PhotoViewModel pViewModel;
     private PhotoListBinding binding;
-
     public RecyclerView.Adapter pAdapter;
     private MutableLiveData<List<Photo>> photoList;
 
@@ -31,15 +31,14 @@ public class PhotoActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
 
         binding = DataBindingUtil.setContentView(this, R.layout.photo_list);
-
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this,factory).get(PhotoViewModel.class);
 
         photoList = pViewModel.getPhotoList(b.getString("title"));
         if(photoList != null){
-
             binding.setPhotos(pViewModel);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            GridLayoutManager layoutManager = new GridLayoutManager(this,3,
+                                                                    GridLayoutManager.HORIZONTAL,false);
             binding.photoList.setLayoutManager(layoutManager);
             pAdapter = new PhotoAdapter(this, photoList.getValue());
             binding.photoList.setAdapter(pAdapter);
