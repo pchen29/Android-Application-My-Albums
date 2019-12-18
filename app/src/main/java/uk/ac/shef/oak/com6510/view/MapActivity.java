@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,13 +23,19 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.location.FusedLocationProviderClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +61,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 2987;
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 7829;
     private static final int CAMERA_REQUEST_CODE = 7500;
+    private static final int DEFAULT_ZOOM = 15;
+    private static final int NEARBY_ZOOM = 18;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     private PhotoViewModel pViewModel;
     private FloatingActionButton fab;
@@ -62,16 +72,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private String name;
     private Barometer mBarometer;
     private TemperatureSensor mTemperatureSensor;
+    private boolean mLocationPermissionGranted;
+    private Location mLastKnownLocation;
     private GoogleMap mMap;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
+
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState)  {
+        Log.i("andy","map oncreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_map);
         Bundle b = getIntent().getExtras();
         title = b.getString("title");
         mBarometer = new Barometer(this);
         mTemperatureSensor = new TemperatureSensor(this);
+        // Construct a FusedLocationProviderClient.
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
@@ -102,17 +120,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
             }
         });
-    }
-
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     // set the file name of image
@@ -166,14 +173,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
         mBarometer.stopBarometer();
         mTemperatureSensor.stopTemperatureSensor();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-         if (requestCode == CAMERA_REQUEST_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            easyImage.openCameraForImage(MapActivity.this);
-        }
     }
 
 
@@ -234,5 +233,105 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
             }
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        String[] necessaryPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+        if (arePermissionsGranted(necessaryPermissions)) {
+            Log.i("andy","have permission");
+            mLocationPermissionGranted = true;
+        } else {
+            Log.i("andy","getting permission");
+            requestPermissionsCompat(necessaryPermissions, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+        getDeviceLocation();
+
+    }
+
+
+
+    /**
+     * Gets the current location of the device, and positions the map's camera.
+     */
+    private void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (mLocationPermissionGranted) {
+                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+                locationResult.addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location){
+                        Log.i("andy","success on get locationn");
+                        mLastKnownLocation = location;
+                        mark(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude(),"Your Position");
+                        final LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+                        mMap.clear();
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, NEARBY_ZOOM));
+                    }
+                });
+            }
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    /**
+     * Handles the result of the request for location permissions.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        mLocationPermissionGranted = false;
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.i("andy","got location permission");
+                    mLocationPermissionGranted = true;
+                }
+                updateLocationUI();
+            }
+            case CAMERA_REQUEST_CODE: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    easyImage.openCameraForImage(MapActivity.this);
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Updates the map's UI settings based on whether the user has granted location permission.
+     */
+    private void updateLocationUI() {
+        if (mMap == null) {
+            Log.i("andy","no map");
+            return;
+        }
+        try {
+            if (mLocationPermissionGranted) {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                Log.i("andy","map location enable");
+            }
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void mark(double latitude, double longitude, String name){
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(latitude, longitude))
+                .title(name));
+        Log.i("andy","add marker on "+latitude+longitude);
+
     }
 }
