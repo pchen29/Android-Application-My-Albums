@@ -16,7 +16,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -37,17 +36,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.location.FusedLocationProviderClient;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigInteger;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import pl.aprilapps.easyphotopicker.ChooserType;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
-import pl.aprilapps.easyphotopicker.Files;
 import pl.aprilapps.easyphotopicker.MediaFile;
 import pl.aprilapps.easyphotopicker.MediaSource;
 import uk.ac.shef.oak.com6510.R;
@@ -72,6 +67,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private String name;
     private Barometer mBarometer;
     private TemperatureSensor mTemperatureSensor;
+
     private boolean mLocationPermissionGranted;
     private Location mLastKnownLocation;
     private GoogleMap mMap;
@@ -86,20 +82,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         setContentView(R.layout.path_map);
         Bundle b = getIntent().getExtras();
         title = b.getString("title");
+
+        // sensors
         mBarometer = new Barometer(this);
         mTemperatureSensor = new TemperatureSensor(this);
+
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.path_map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.path_map);
         mapFragment.getMapAsync(this);
 
         checkPermissions(getApplicationContext());
         name = setImageName();
+
+        // initialize easyImage
         easyImage = new EasyImage.Builder(this)
                 .setChooserTitle(title)
                 .setCopyImagesToPublicGalleryFolder(false)
@@ -108,6 +108,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .allowMultiple(true)
                 .build();
 
+        // add click event
         fab = (FloatingActionButton) findViewById(R.id.take_photo_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +123,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         });
     }
 
-    // set the file name of image
+    /**
+     * set the file name of image
+     */
     private String setImageName(){
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp;
@@ -131,19 +134,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         easyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
             public void onMediaFilesPicked(MediaFile[] imageFiles, MediaSource source) {
                 onPhotosReturned(imageFiles);
             }
-
             @Override
             public void onImagePickerError(@NonNull Throwable error, @NonNull MediaSource source) {
                 //Some error handling
                 error.printStackTrace();
             }
-
             @Override
             public void onCanceled(@NonNull MediaSource source) {
                 //Not necessary to remove any files manually anymore
@@ -152,6 +152,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
+        // insert a new photo to DB
         Photo photo = new Photo();
         photo.setTitle(title);
         for(int i=0;i<returnedPhotos.length;i++){
@@ -161,26 +162,29 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String timeStamp = dateFormat.format(new Date());
-            String date = timeStamp.substring(0,9);
-            String time = timeStamp.substring(11,15);
+            String date = timeStamp.substring(0,10);
+            String time = timeStamp.substring(11,16);
             photo.setDate(date);
             photo.setTime(time);
+            photo.setLatitude(mLastKnownLocation.getLatitude());
+            photo.setLongitude(mLastKnownLocation.getLongitude());
+
+            mark(photo.getLongitude(),photo.getLatitude(),photo.getName());
 
             photo.setTemperature(String.valueOf(mTemperatureSensor.getTemperatureValue()) + " °C");
             photo.setPressure(String.valueOf(mBarometer.getPressureValue())+" mbars");
 
             pViewModel.insertPhoto(photo);
         }
+        // stop sensors
         mBarometer.stopBarometer();
         mTemperatureSensor.stopTemperatureSensor();
     }
-
 
     private boolean arePermissionsGranted(String[] permissions) {
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
                 return false;
-
         }
         return true;
     }
@@ -235,22 +239,26 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
     }
 
+
+
+    /**
+     *
+     * @param googleMap
+     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         String[] necessaryPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
         if (arePermissionsGranted(necessaryPermissions)) {
-            Log.i("andy","have permission");
+            Log.i("msg","have permission");
             mLocationPermissionGranted = true;
         } else {
-            Log.i("andy","getting permission");
+            Log.i("msg","getting permission");
             requestPermissionsCompat(necessaryPermissions, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
         getDeviceLocation();
-
     }
-
-
 
     /**
      * Gets the current location of the device, and positions the map's camera.
@@ -266,7 +274,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 locationResult.addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location){
-                        Log.i("andy","success on get locationn");
+                        Log.i("msg","success to get location");
                         mLastKnownLocation = location;
                         mark(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude(),"Your Position");
                         final LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
@@ -294,7 +302,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.i("andy","got location permission");
+                    Log.i("msg","got location permission");
                     mLocationPermissionGranted = true;
                 }
                 updateLocationUI();
@@ -313,14 +321,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
      */
     private void updateLocationUI() {
         if (mMap == null) {
-            Log.i("andy","no map");
+            Log.i("msg","no map");
             return;
         }
         try {
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                Log.i("andy","map location enable");
+                Log.i("msg","map location enable");
             }
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
@@ -331,7 +339,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(latitude, longitude))
                 .title(name));
-        Log.i("andy","add marker on "+latitude+longitude);
+        Log.i("msg","add marker on "+latitude+","+longitude);
 
     }
 }

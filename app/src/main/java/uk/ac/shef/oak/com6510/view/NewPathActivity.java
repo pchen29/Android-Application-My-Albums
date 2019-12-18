@@ -58,12 +58,9 @@ public class NewPathActivity extends AppCompatActivity {
                 // insert new path to database
                 Path path = new Path();
                 path.setTitle(title);
-                Log.d("time",timeStamp);
-                path.setDate(timeStamp.substring(0,9));
-                path.setTime(timeStamp.substring(11,15));
-                Log.d("time",timeStamp.substring(0,10));
-                Log.d("time",timeStamp.substring(11,16));
-                //pViewModel.insertPath(path);
+                path.setDate(timeStamp.substring(0,10));
+                path.setTime(timeStamp.substring(11,16));
+                pViewModel.insertPath(path);
 
                 Intent intent = new Intent();
                 intent.setClass(NewPathActivity.this,MapActivity.class);

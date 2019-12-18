@@ -22,7 +22,7 @@ import uk.ac.shef.oak.com6510.databinding.PhotoDetailsBinding;
 import uk.ac.shef.oak.com6510.model.Photo;
 import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 
-public class ShowPhotoActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class PhotoDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public PhotoViewModel pViewModel;
     private PhotoDetailsBinding binding;
@@ -49,8 +49,8 @@ public class ShowPhotoActivity extends AppCompatActivity implements OnMapReadyCa
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ShowPhotoActivity.this, LargePhotoActivity.class);
-                intent.putExtra("name", photoItem.getValue().getName());
+                Intent intent = new Intent(PhotoDetailsActivity.this, LargePhotoActivity.class);
+                intent.putExtra("name", name);
                 startActivity(intent);
             }
         });

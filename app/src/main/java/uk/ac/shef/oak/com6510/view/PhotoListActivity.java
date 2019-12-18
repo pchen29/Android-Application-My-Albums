@@ -19,7 +19,7 @@ import uk.ac.shef.oak.com6510.databinding.PhotoListBinding;
 import uk.ac.shef.oak.com6510.model.Photo;
 import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 
-public class PhotoActivity extends AppCompatActivity {
+public class PhotoListActivity extends AppCompatActivity {
     public PhotoViewModel pViewModel;
     private PhotoListBinding binding;
     public RecyclerView.Adapter pAdapter;
