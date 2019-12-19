@@ -28,7 +28,7 @@ import uk.ac.shef.oak.com6510.viewModel.PathViewModel;
 public class MainActivity extends AppCompatActivity {
 
     public  PathViewModel pViewModel;
-    public MutableLiveData<List<Path>> pathList;
+    public  MutableLiveData<List<Path>> pathList;
     private FloatingActionButton mButton;
 
     @Override
@@ -38,14 +38,6 @@ public class MainActivity extends AppCompatActivity {
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this,factory).get(PathViewModel.class);
         pathList = pViewModel.getPathList();
-
-        pViewModel.getPathList().observe(this, new Observer<List<Path>>() {
-            @Override
-            public void onChanged(List<Path> paths) {
-                if(paths != null)
-                    pathList.postValue(paths);
-            }
-        });
 
         try{
             if(pathList.getValue() == null){
@@ -58,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
                 // add a click event
                 mButton = (FloatingActionButton) findViewById(R.id.add_button);
                 clickFab(mButton);
-
             }
 
         }catch (Exception e){
@@ -69,7 +60,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-
+        pathList = pViewModel.getPathList();
+        bindData(pViewModel, pathList);
+        mButton = (FloatingActionButton) findViewById(R.id.add_button);
+        clickFab(mButton);
     }
 
 

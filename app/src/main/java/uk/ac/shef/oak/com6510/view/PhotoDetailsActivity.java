@@ -66,7 +66,7 @@ public class PhotoDetailsActivity extends AppCompatActivity implements OnMapRead
         mapFragment.getMapAsync(this);
 
         String title = b.getString("title");
-        addMarks(pViewModel.getPhotoList(title).getValue());
+        //addMarks(pViewModel.getPhotoList(title).getValue());
     }
 
     @Override

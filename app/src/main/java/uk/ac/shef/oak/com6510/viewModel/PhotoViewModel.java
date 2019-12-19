@@ -1,6 +1,7 @@
 package uk.ac.shef.oak.com6510.viewModel;
 
 import android.app.Application;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.databinding.BindingAdapter;
@@ -26,15 +27,17 @@ public class PhotoViewModel extends AndroidViewModel {
     }
 
     public void updatePhotoList(String title){
-        photoList.setValue(photoRepository.getPhotoList(title));
+        Log.d("updatePhoto()",""+photoRepository.getPhotoList(title).getValue().size());
+        photoList = photoRepository.getPhotoList(title);
     }
     
     public MutableLiveData<List<Photo>> getPhotoList(){
+        Log.d("getPhotoList()",""+photoList.getValue());
         return photoList;
     }
 
     public MutableLiveData<Photo> getPhotoItem(String name){
-        photoItem.setValue(photoRepository.getPhotoItem(name));
+        photoItem = photoRepository.getPhotoItem(name);
         return photoItem;
     }
 

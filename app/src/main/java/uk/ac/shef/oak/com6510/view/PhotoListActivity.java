@@ -25,6 +25,7 @@ public class PhotoListActivity extends AppCompatActivity{
     public PhotoViewModel pViewModel;
     private PhotoListBinding binding;
     public RecyclerView.Adapter pAdapter;
+    private MutableLiveData<List<Photo>> photoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,21 +43,25 @@ public class PhotoListActivity extends AppCompatActivity{
             @Override
             public void onChanged(List<Photo> photos) {
                 binding.setPhotos(pViewModel);
+                //photoList.postValue(photos);
                 Log.d("msg","update photo list");
                 pAdapter = new PhotoAdapter(getApplicationContext(), pViewModel.getPhotoList().getValue());
+
+                Log.i("size",""+pViewModel.getPhotoList().getValue());
                 binding.photoList.setLayoutManager(layoutManager);
                 binding.photoList.setAdapter(pAdapter);
+
             }
         });
         
         pViewModel.updatePhotoList(title);
 
-        if (photoList.getValue().isEmpty()){
+        /*if (photoList.getValue().isEmpty()){
             Intent intent = new Intent(this, MapActivity.class);
             intent.putExtra("title", title);
             startActivity(intent);
             finish();
-        }
+        }*/
 
     }
 
