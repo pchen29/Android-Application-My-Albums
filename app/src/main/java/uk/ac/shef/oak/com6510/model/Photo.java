@@ -1,6 +1,7 @@
 package uk.ac.shef.oak.com6510.model;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
@@ -9,9 +10,13 @@ import androidx.room.PrimaryKey;
 @Entity(indices={@Index(value = "name")})
 public class Photo {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    @NonNull
+    private int id=0;
 
+    @ColumnInfo(name = "name")
     private String name;
+
+    @ColumnInfo(name = "title")
     private String title;
 
     private String date;
@@ -24,20 +29,8 @@ public class Photo {
     private String pressure;
     private String photoUrl;
 
-    /*public Photo(String id, String name,String title, String date, String time, Location location,
-                 String temperature, String pressure, String photoUrl){
-        this.name = name;
-        this.title = title;
-        this.date = date;
-        this.time = time;
-        this.location = location;
-        this.temperature = temperature;
-        this.pressure = pressure;
-        this.photoUrl = photoUrl;
 
-    }*/
-
-    public void setId(int id){this.id = id;}
+    public void setId(@NonNull int id){this.id = id;}
 
     public void setName(String name){
         this.name = name;
@@ -73,6 +66,7 @@ public class Photo {
 
     public void setPhotoUrl(String photoUrl){this.photoUrl = photoUrl;}
 
+    @NonNull
     public int getId(){
         return id;
     }

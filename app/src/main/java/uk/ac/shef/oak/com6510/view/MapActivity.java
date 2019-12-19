@@ -150,7 +150,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onClick(View v) {
                 stopLocationUpdates(mFusedLocationProviderClient);
-                Log.d("msg","stop to update your location");
+                //Log.d("msg","stop to update your location");
+                /*Intent intent = new Intent();
+                intent.setClass(MapActivity.this, PhotoListActivity.class);
+                intent.putExtra("title",title);
+                startActivity(intent);*/
             }
         });
     }
@@ -199,7 +203,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         photo.setTitle(title);
         String name = mediaFile.getFile().getName();
         photo.setName(name);
-        photo.setPhotoUrl(mediaFile.getFile().getAbsoluteFile().toString());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timeStamp = dateFormat.format(new Date());
@@ -207,16 +210,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         String time = timeStamp.substring(11,16);
         photo.setDate(date);
         photo.setTime(time);
-        photo.setLatitude(location.getLatitude());
-        photo.setLongitude(location.getLongitude());
 
+        photo.setLongitude(location.getLongitude());
+        photo.setLatitude(location.getLatitude());
         markPhotoLocation(photo.getLatitude(),photo.getLongitude(),photo.getName());
 
         photo.setTemperature(String.valueOf(mTemperatureSensor.getTemperatureValue()) + " °C");
         photo.setPressure(String.valueOf(mBarometer.getPressureValue())+" mbars");
 
-        Log.d("temp", photo.getTemperature());
+        photo.setPhotoUrl(mediaFile.getFile().getAbsoluteFile().toString());
+
         pViewModel.insertPhoto(photo);
+
+
+        Intent intent = new Intent();
+        intent.setClass(MapActivity.this, LargePhotoActivity.class);
+        intent.putExtra("url",photo.getPhotoUrl());
+        Log.d("url", photo.getPhotoUrl());
+        startActivity(intent);
     }
 
     private boolean arePermissionsGranted(String[] permissions) {

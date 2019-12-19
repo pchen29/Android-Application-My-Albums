@@ -50,10 +50,5 @@ public class PathRepository  {
             }
             return null;
         }
-
-        protected Void onPostExecute(){
-            Log.d("msg","db has updated");
-            return null;
-        }
     }
 }

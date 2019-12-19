@@ -7,10 +7,10 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import uk.ac.shef.oak.com6510.databinding.PhotoListBinding;
 import uk.ac.shef.oak.com6510.model.Photo;
 import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 
-public class PhotoListActivity extends AppCompatActivity {
+public class PhotoListActivity extends AppCompatActivity{
     public PhotoViewModel pViewModel;
     private PhotoListBinding binding;
     public RecyclerView.Adapter pAdapter;
@@ -35,25 +35,32 @@ public class PhotoListActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.photo_list);
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
-        pViewModel = ViewModelProviders.of(this,factory).get(PhotoViewModel.class);
-        photoList = pViewModel.getAllPhotos();
-        //Log.d("title",title);
+        pViewModel = ViewModelProviders.of(this, factory).get(PhotoViewModel.class);
+        photoList = pViewModel.getPhotoList(title);
 
-        if(photoList.getValue() != null){
-            Log.d("size", ""+photoList.getValue().size());
+        pViewModel.getPhotoList(title).observe(this, new Observer<List<Photo>>() {
+            @Override
+            public void onChanged(List<Photo> photos) {
+                photoList.postValue(photos);
+                Log.d("msg","update photo list");
+            }
+        });
+
+        if (!photoList.getValue().isEmpty()){
             binding.setPhotos(pViewModel);
+            Log.d("size", ""+photoList.getValue().size());
             GridLayoutManager layoutManager = new GridLayoutManager(this,3,
-                                                                    GridLayoutManager.HORIZONTAL,false);
+                GridLayoutManager.HORIZONTAL,false);
             binding.photoList.setLayoutManager(layoutManager);
             pAdapter = new PhotoAdapter(this, photoList.getValue());
             binding.photoList.setAdapter(pAdapter);
-
         }else{
             Intent intent = new Intent(this, MapActivity.class);
             intent.putExtra("title", title);
             startActivity(intent);
             finish();
         }
+
     }
 
 }

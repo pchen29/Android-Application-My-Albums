@@ -21,6 +21,11 @@ public class Barometer {
     private long BAROMETER_READING_FREQUENCY= 30000;
     private long lastReportTime = 0;
     private float pressureValue;
+    /**
+     * this is used to stop the barometer if we have not seen any movement in the last 20 seconds
+     */
+    private static final long STOPPING_THRESHOLD = (long)20000;
+
 
     public Barometer(Context context) {
         SystemClock.elapsedRealtime();

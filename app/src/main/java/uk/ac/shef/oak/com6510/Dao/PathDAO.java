@@ -21,11 +21,8 @@ public interface PathDAO {
     @Delete
     void deletePath(Path path);
 
-    @Query("SELECT * FROM Path ORDER BY title ASC")
+    @Query("SELECT * FROM Path ORDER BY id ASC")
     List<Path> getAllData();
-
-    @Query("SELECT * FROM Path where title LIKE :title")
-    Path findPathByTitle(String title);
 
     @Delete
     void deleteAll(Path... paths);

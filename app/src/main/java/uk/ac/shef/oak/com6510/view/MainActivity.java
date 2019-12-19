@@ -3,6 +3,7 @@ package uk.ac.shef.oak.com6510.view;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,34 +39,39 @@ public class MainActivity extends AppCompatActivity {
         pViewModel = ViewModelProviders.of(this,factory).get(PathViewModel.class);
         pathList = pViewModel.getPathList();
 
+        pViewModel.getPathList().observe(this, new Observer<List<Path>>() {
+            @Override
+            public void onChanged(List<Path> paths) {
+                if(paths != null)
+                    pathList.postValue(paths);
+            }
+        });
 
-        if(pathList.getValue().size() != 0){
-            showData(pViewModel,pathList);
-            // add a click event
-            mButton = (FloatingActionButton) findViewById(R.id.add_button);
-            clickFab(mButton);
+        try{
+            if(pathList.getValue() == null){
+                setContentView(R.layout.empty_list);
+                // add a click event
+                mButton = (FloatingActionButton) findViewById(R.id.add_button);
+                clickFab(mButton);
+            }else{
+                bindData(pViewModel,pathList);
+                // add a click event
+                mButton = (FloatingActionButton) findViewById(R.id.add_button);
+                clickFab(mButton);
 
-        }else{
-            setContentView(R.layout.empty_list);
-            // add a click event
-            mButton = (FloatingActionButton) findViewById(R.id.add_button);
-            clickFab(mButton);
+            }
+
+        }catch (Exception e){
+            Log.e("MainActivity","have exception");
         }
-
-
     }
 
     @Override
-    protected void onResume(){
+    public void onResume(){
         super.onResume();
-        ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
-        pViewModel = ViewModelProviders.of(this,factory).get(PathViewModel.class);
-        pathList = pViewModel.getPathList();
-        showData(pViewModel,pathList);
 
-        mButton = (FloatingActionButton) findViewById(R.id.add_button);
-        clickFab(mButton);
     }
+
 
     /**
      * click event for add button
@@ -81,11 +88,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     /**
-     * binding data and show list
+     * bind data and show list
       */
-    private void showData(PathViewModel pViewModel, MutableLiveData<List<Path>> pathList){
+    private void bindData(PathViewModel pViewModel, MutableLiveData<List<Path>> pathList){
         PathListBinding binding = DataBindingUtil.setContentView(this, R.layout.path_list);
         binding.setLifecycleOwner(this);
         binding.setPath(pViewModel);

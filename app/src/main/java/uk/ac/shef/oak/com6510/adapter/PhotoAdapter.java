@@ -48,11 +48,10 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
     @Override
     public void onBindViewHolder(@NonNull PhotoAdapter.ViewHolder holder, final int position) {
         PhotoAdapter.ViewHolder viewHolder = (PhotoAdapter.ViewHolder)holder;
-        // dataBinding绑定
+        // dataBinding
         Photo photo = list.get(position);
         viewHolder.binding.setPhotoItem(photo);
         final String name = photo.getName();
-
         // item clickListener
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
