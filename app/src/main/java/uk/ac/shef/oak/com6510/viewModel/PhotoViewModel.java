@@ -1,6 +1,7 @@
 package uk.ac.shef.oak.com6510.viewModel;
 
 import android.app.Application;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -34,8 +35,11 @@ public class PhotoViewModel extends AndroidViewModel {
         return photoList;
     }
 
-    public MutableLiveData<Photo> getPhotoItem(String name){
-        photoItem = photoRepository.getPhotoItem(name);
+    public void updatePhotoItem(String name){
+        photoRepository.getPhotoItem(name);
+    }
+
+    public MutableLiveData<Photo> getPhotoItem(){
         return photoItem;
     }
 
@@ -52,17 +56,7 @@ public class PhotoViewModel extends AndroidViewModel {
 
     @BindingAdapter({"imageUrl"})
     public static void loadPhotoItem(ImageView view, String url){
-            /*Picasso.with(
-                    view.getContext()).
-                    load(url).
-                    resize(200,200).
-                    centerCrop().
-                    into(view);*/
-
-            Picasso.with(
-                    view.getContext()).
-                    load(url).
-                    into(view);
-
+        Uri uri = Uri.parse(url);
+        view.setImageURI(uri);
     }
 }

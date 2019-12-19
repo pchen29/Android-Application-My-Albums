@@ -1,13 +1,18 @@
 package uk.ac.shef.oak.com6510.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,10 +31,10 @@ import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 
 public class PhotoDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    public PhotoViewModel pViewModel;
-    private PhotoDetailsBinding binding;
-    private MutableLiveData<Photo> photoItem;
     private ImageView imageView;
+    private TextView titleView;
+    private TextView pressureView;
+    private TextView temperatureView;
     private String name;
     private GoogleMap mMap;
 
@@ -40,32 +45,26 @@ public class PhotoDetailsActivity extends AppCompatActivity implements OnMapRead
 
         Bundle b = getIntent().getExtras();
         name = b.getString("name");
+        String url = b.getString("url");
+        String title = b.getString("title");
+        String pressure = b.getString("pressure");
+        String temperature = b.getString("temperature");
+        imageView = (ImageView) findViewById(R.id.photo_img);
+        titleView = (TextView) findViewById(R.id.photo_title);
+        temperatureView = (TextView) findViewById(R.id.photo_temperature);
+        pressureView = (TextView) findViewById(R.id.photo_pressure);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.photo_details);
-        binding.setLifecycleOwner(this);
-
-        pViewModel = ViewModelProviders.of(this).get(PhotoViewModel.class);
-        imageView = (ImageView)findViewById(R.id.photo_img);
-        photoItem = pViewModel.getPhotoItem(b.getString("name"));
-
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(PhotoDetailsActivity.this, LargePhotoActivity.class);
-                intent.putExtra("name", name);
-                startActivity(intent);
-            }
-        });
-
-        binding.setPhotoDetails(photoItem.getValue());
-
+        Uri uri = Uri.parse(url);
+        imageView.setImageURI(uri);
+        titleView.setText(title);
+        temperatureView.setText(temperature);
+        pressureView.setText(pressure);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.photo_map);
         mapFragment.getMapAsync(this);
 
-        String title = b.getString("title");
         //addMarks(pViewModel.getPhotoList(title).getValue());
     }
 

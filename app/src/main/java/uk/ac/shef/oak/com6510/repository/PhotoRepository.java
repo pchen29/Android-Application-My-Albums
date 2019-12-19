@@ -131,7 +131,7 @@ public class PhotoRepository {
         }
 
         protected void onPostExecute(Photo result) {
-            photoItem.setValue(result);
+            caller.getPhotoItem().setValue(result);
         }
     }
 }

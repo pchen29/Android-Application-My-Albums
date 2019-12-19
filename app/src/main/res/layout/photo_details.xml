@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:content="view.ShowPhotoActivity">
+        tools:content="view.PhotoDetailsActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
             <ImageView
                 android:id="@+id/photo_img"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 app:imageUrl="@{photoDetails.photoUrl}"
                 />
@@ -133,7 +133,7 @@
                 android:id="@+id/photo_map"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="600dp"
                 android:layout_marginTop="10dp"/>
 
         </LinearLayout>

@@ -49,7 +49,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
     public void onBindViewHolder(@NonNull PhotoAdapter.ViewHolder holder, final int position) {
         PhotoAdapter.ViewHolder viewHolder = (PhotoAdapter.ViewHolder)holder;
         // dataBinding
-        Photo photo = list.get(position);
+        final Photo photo = list.get(position);
         viewHolder.binding.setPhotoItem(photo);
         final String name = photo.getName();
         // item clickListener
@@ -58,6 +58,10 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
             public void onClick(View v) {
                 Intent intent = new Intent(context, PhotoDetailsActivity.class);
                 intent.putExtra("name", name);
+                intent.putExtra("title", photo.getTitle());
+                intent.putExtra("url",photo.getPhotoUrl());
+                intent.putExtra("pressure",photo.getPressure());
+                intent.putExtra("temperature", photo.getTemperature());
                 context.startActivity(intent);
             }
         });

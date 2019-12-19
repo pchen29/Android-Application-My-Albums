@@ -32,13 +32,13 @@ public class PhotoListActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle b = getIntent().getExtras();
-        String title = b.getString("title");
+        final String title = b.getString("title");
 
         binding = DataBindingUtil.setContentView(this, R.layout.photo_list);
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this, factory).get(PhotoViewModel.class);
-        final GridLayoutManager layoutManager = new GridLayoutManager(this,3,
-                GridLayoutManager.HORIZONTAL,false);
+        final GridLayoutManager layoutManager = new GridLayoutManager(this,4,
+                GridLayoutManager.VERTICAL,false);
 
         pAdapter = new PhotoAdapter(getApplicationContext(),new ArrayList<Photo>());
         binding.photoList.setAdapter(pAdapter);
@@ -57,12 +57,7 @@ public class PhotoListActivity extends AppCompatActivity{
         Log.i("msg","updateListInActivity");
         pViewModel.updatePhotoList(title);
 
-        /*if (photoList.getValue().isEmpty()){
-            Intent intent = new Intent(this, MapActivity.class);
-            intent.putExtra("title", title);
-            startActivity(intent);
-            finish();
-        }*/
+
 
     }
 
