@@ -36,11 +36,10 @@ public class PhotoListActivity extends AppCompatActivity{
         binding = DataBindingUtil.setContentView(this, R.layout.photo_list);
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this, factory).get(PhotoViewModel.class);
-        photoList = pViewModel.getPhotoList(title);
         final GridLayoutManager layoutManager = new GridLayoutManager(this,3,
                 GridLayoutManager.HORIZONTAL,false);
 
-        pViewModel.getPhotoList(title).observe(this, new Observer<List<Photo>>() {
+        pViewModel.getPhotoList().observe(this, new Observer<List<Photo>>() {
             @Override
             public void onChanged(List<Photo> photos) {
                 binding.setPhotos(pViewModel);
@@ -51,6 +50,8 @@ public class PhotoListActivity extends AppCompatActivity{
                 binding.photoList.setAdapter(pAdapter);
             }
         });
+        
+        pViewModel.updatePhotoList(title);
 
         if (photoList.getValue().isEmpty()){
             Intent intent = new Intent(this, MapActivity.class);
