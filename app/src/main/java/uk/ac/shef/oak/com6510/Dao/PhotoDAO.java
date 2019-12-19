@@ -1,6 +1,5 @@
 package uk.ac.shef.oak.com6510.Dao;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -20,10 +19,10 @@ public interface PhotoDAO {
     @Delete
     void delete (Photo photos);
 
-    @Query("SELECT * FROM photo ORDER BY id ASC")
+    @Query("SELECT * FROM photo ORDER BY id DESC")
     List<Photo> getAllPhotos();
 
-    @Query("SELECT * FROM photo WHERE title LIKE :title ORDER BY id ASC")
+    @Query("SELECT * FROM photo WHERE title LIKE :title ORDER BY id DESC")
     List<Photo> findPhotoByTitle(String title);
 
     @Query("SELECT * FROM photo WHERE name LIKE :name")

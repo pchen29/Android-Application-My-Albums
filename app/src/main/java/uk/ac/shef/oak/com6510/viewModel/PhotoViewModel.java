@@ -51,15 +51,18 @@ public class PhotoViewModel extends AndroidViewModel {
      */
 
     @BindingAdapter({"imageUrl"})
-    public void loadPhotoItem(ImageView view, String url){
-        if(!url.isEmpty()){
-            Picasso.with(
+    public static void loadPhotoItem(ImageView view, String url){
+            /*Picasso.with(
                     view.getContext()).
                     load(url).
                     resize(200,200).
                     centerCrop().
-                    into(view);
-        }
-    }
+                    into(view);*/
 
+            Picasso.with(
+                    view.getContext()).
+                    load(url).
+                    into(view);
+
+    }
 }

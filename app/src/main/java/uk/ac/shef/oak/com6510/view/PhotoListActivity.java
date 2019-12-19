@@ -39,6 +39,7 @@ public class PhotoListActivity extends AppCompatActivity{
         pViewModel = ViewModelProviders.of(this, factory).get(PhotoViewModel.class);
         final GridLayoutManager layoutManager = new GridLayoutManager(this,3,
                 GridLayoutManager.HORIZONTAL,false);
+
         pAdapter = new PhotoAdapter(getApplicationContext(),new ArrayList<Photo>());
         binding.photoList.setAdapter(pAdapter);
         binding.photoList.setLayoutManager(layoutManager);
@@ -50,7 +51,7 @@ public class PhotoListActivity extends AppCompatActivity{
                 //photoList.postValue(photos);
                 Log.d("msg",pViewModel.getPhotoList().getValue().size()+"");
                 pAdapter = new PhotoAdapter(getApplicationContext(), pViewModel.getPhotoList().getValue());
-
+                binding.photoList.setAdapter(pAdapter);
             }
         });
         Log.i("msg","updateListInActivity");

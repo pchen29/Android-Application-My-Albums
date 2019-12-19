@@ -104,7 +104,7 @@ public class PhotoRepository {
 
         protected void onPostExecute(List<Photo> result) {
             caller.getPhotoList().setValue(result);
-            Log.d("SelectAsyncTask",""+photoList.getValue().size());
+            //Log.d("SelectAsyncTask",""+photoList.getValue().size());
         }
     }
 

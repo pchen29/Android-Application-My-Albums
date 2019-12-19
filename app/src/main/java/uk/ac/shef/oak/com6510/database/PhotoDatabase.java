@@ -10,6 +10,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import uk.ac.shef.oak.com6510.model.Photo;
 import uk.ac.shef.oak.com6510.Dao.PhotoDAO;
 
+/**
+ * consider too man
+ */
+
 @Database(entities = {Photo.class}, version = 3, exportSchema = false)
 public abstract class PhotoDatabase extends RoomDatabase {
 

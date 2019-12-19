@@ -21,7 +21,7 @@ public interface PathDAO {
     @Delete
     void deletePath(Path path);
 
-    @Query("SELECT * FROM Path ORDER BY id ASC")
+    @Query("SELECT * FROM Path ORDER BY id DESC")
     List<Path> getAllData();
 
     @Delete
