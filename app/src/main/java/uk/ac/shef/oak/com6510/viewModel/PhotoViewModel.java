@@ -27,12 +27,10 @@ public class PhotoViewModel extends AndroidViewModel {
     }
 
     public void updatePhotoList(String title){
-        Log.d("updatePhoto()",""+photoRepository.getPhotoList(title).getValue().size());
         photoList = photoRepository.getPhotoList(title);
     }
     
     public MutableLiveData<List<Photo>> getPhotoList(){
-        Log.d("getPhotoList()",""+photoList.getValue());
         return photoList;
     }
 
@@ -45,6 +43,12 @@ public class PhotoViewModel extends AndroidViewModel {
     {
         photoRepository.insertPhoto(photo);
     }
+
+    /**
+     *
+     * @param view
+     * @param url
+     */
 
     @BindingAdapter({"imageUrl"})
     public void loadPhotoItem(ImageView view, String url){

@@ -27,6 +27,7 @@ public class LargePhotoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_large_photo);
+
         Bundle b = getIntent().getExtras();
         String url = b.getString("url");
         view = (ImageView) findViewById(R.id.photo_large);

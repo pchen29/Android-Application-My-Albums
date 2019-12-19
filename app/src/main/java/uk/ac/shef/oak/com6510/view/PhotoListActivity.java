@@ -42,6 +42,7 @@ public class PhotoListActivity extends AppCompatActivity{
         pAdapter = new PhotoAdapter(getApplicationContext(),new ArrayList<Photo>());
         binding.photoList.setAdapter(pAdapter);
         binding.photoList.setLayoutManager(layoutManager);
+
         pViewModel.getPhotoList().observe(this, new Observer<List<Photo>>() {
             @Override
             public void onChanged(List<Photo> photos) {

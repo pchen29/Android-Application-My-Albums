@@ -39,8 +39,12 @@ public class MainActivity extends AppCompatActivity {
         pViewModel = ViewModelProviders.of(this,factory).get(PathViewModel.class);
         pathList = pViewModel.getPathList();
 
+        /*
+         * if users open the app fo the first time,
+         * they can be shown an empty page
+         */
         try{
-            if(pathList.getValue() == null){
+            if(pathList.getValue().isEmpty()){
                 setContentView(R.layout.empty_list);
                 // add a click event
                 mButton = (FloatingActionButton) findViewById(R.id.add_button);
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public void onResume(){
         super.onResume();
@@ -69,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * click event for add button
-     *
      */
     private void clickFab(FloatingActionButton mButton){
         mButton.setOnClickListener(new View.OnClickListener(){
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * bind data and show list
-      */
+     */
     private void bindData(PathViewModel pViewModel, MutableLiveData<List<Path>> pathList){
         PathListBinding binding = DataBindingUtil.setContentView(this, R.layout.path_list);
         binding.setLifecycleOwner(this);

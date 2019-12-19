@@ -2,8 +2,6 @@ package uk.ac.shef.oak.com6510.viewModel;
 
 
 import android.app.Application;
-
-import androidx.databinding.ObservableField;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
@@ -11,6 +9,7 @@ import java.util.List;
 
 import uk.ac.shef.oak.com6510.repository.PathRepository;
 import uk.ac.shef.oak.com6510.model.Path;
+
 
 public class PathViewModel extends AndroidViewModel {
 

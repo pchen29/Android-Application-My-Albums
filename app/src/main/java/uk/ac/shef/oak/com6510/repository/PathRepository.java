@@ -34,6 +34,9 @@ public class PathRepository  {
         new InsertAsyncTask(pathDAO).execute(path);
     }
 
+    /**
+     *  create an asyncTask to insert data to database
+     */
     private class InsertAsyncTask extends AsyncTask<Path, Void, Void> {
 
         private PathDAO mPathDAO;
@@ -51,4 +54,6 @@ public class PathRepository  {
             return null;
         }
     }
+
+
 }

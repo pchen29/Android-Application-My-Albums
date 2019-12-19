@@ -16,6 +16,7 @@ import uk.ac.shef.oak.com6510.model.Photo;
 
 public class PhotoRepository {
 
+    private static final String TAG = PhotoRepository.class.getSimpleName();
     private MutableLiveData<List<Photo>> photoList;
     private MutableLiveData<Photo> photoItem;
     private PhotoDatabase photoDatabase;
@@ -31,18 +32,14 @@ public class PhotoRepository {
     }
 
     public MutableLiveData<List<Photo>> getPhotoList(String title){
-        if(photoList == null){
-            new SelectAsyncTask(photoDAO).execute(title);
-            Log.d("msg","get photo list from DB");
-        }
+        new SelectAsyncTask(photoDAO).execute(title);
+        Log.d(TAG,"get photo list from DB");
         return photoList;
     }
 
     public MutableLiveData<Photo> getPhotoItem(String name){
-        if(photoItem == null){
-            new SelectItemAsyncTask(photoDAO).execute(name);
-            Log.d("msg","get a photo from DB");
-        }
+        new SelectItemAsyncTask(photoDAO).execute(name);
+        Log.d(TAG,"get a photo from DB");
         return photoItem;
     }
 
@@ -50,6 +47,9 @@ public class PhotoRepository {
         new InsertAsyncTask(photoDAO).execute(photo);
     }
 
+    /**
+     *  create an asyncTask to insert data to database
+     */
     private class InsertAsyncTask extends AsyncTask<Photo, Void, Void> {
 
         private PhotoDAO mPhotoDAO;
@@ -64,10 +64,10 @@ public class PhotoRepository {
             try{
                 for (int i = 0; i < photos.length; i++) {
                     mPhotoDAO.insertPhoto(photos[i]);
-                    Log.d("msg", "insert a new photo "+photos[i].getName()+" to DB");
+                    Log.d(TAG, "insert a new photo "+photos[i].getName()+" to DB");
                 }
                 int i = mPhotoDAO.howManyElements();
-                Log.d("msg","i = "+i);
+                Log.d(TAG,"i = "+i);
 
             } catch (Exception e){
                 Log.e("Exception","fail to insert a photo");
@@ -77,6 +77,10 @@ public class PhotoRepository {
         }
     }
 
+
+    /**
+     * create an AsyncTeak to select photos with specified path title
+     */
     private class SelectAsyncTask extends AsyncTask<String,Void,List<Photo>>{
 
         private PhotoDAO sPhotoDAO;
@@ -89,17 +93,22 @@ public class PhotoRepository {
             List<Photo> photos = new ArrayList<Photo>();
             for(int i=0; i<titles.length;i++){
                 photos = sPhotoDAO.findPhotoByTitle(titles[i]);
-                Log.d("msg","get photo list from DB");
-                Log.d("msg",""+photos.size());
+                Log.d("SelectAsyncTask","get photo list from DB");
+                Log.d("SelectAsyncTask",""+photos.size());
             }
             return photos;
         }
 
         protected void onPostExecute(List<Photo> result) {
-            photoList.postValue(result);
+            photoList.setValue(result);
+            Log.d("SelectAsyncTask",""+photoList.getValue().size());
         }
     }
 
+
+    /**
+     * create an AsyncTeak to select a specified photo
+     */
     private class SelectItemAsyncTask extends AsyncTask<String,Void, Photo>{
 
         private PhotoDAO sPhotoDAO;
@@ -112,14 +121,14 @@ public class PhotoRepository {
         protected Photo doInBackground(String... names){
             for(int i=0;i<names.length;i++){
                 photo = sPhotoDAO.findPhotoByName(names[i]);
-                Log.d("msg","get photo list from DB");
-                Log.d("Post",photo.getName());
+                Log.d("SelectItemAsyncTask","get photo list from DB");
+                Log.d("SelectItemAsyncTask",photo.getName());
             }
             return photo;
         }
 
         protected void onPostExecute(Photo result) {
-            photoItem.postValue(result);
+            photoItem.setValue(result);
         }
     }
 }
