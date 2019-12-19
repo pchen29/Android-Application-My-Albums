@@ -9,8 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -91,7 +89,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)  {
-        Log.i("onCreate","map oncreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_map);
 
@@ -188,6 +185,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         });
     }
 
+
+    /**
+     * Called when photos are loaded, store the new photo into database
+     */
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
         // insert a new photo to DB
         for(int i=0;i<returnedPhotos.length;i++){
@@ -196,7 +197,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
     /**
-     * store the new photo
+     * store the new photo, then start an intent and go to LargePhotoActivity
+     * @param title the title of this photo
+     * @param location the location info of this photo
      */
     private void addPhoto(MediaFile mediaFile,String title,Location location){
         Photo photo = new Photo();
@@ -230,6 +233,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         startActivity(intent);
     }
 
+
+    /**
+     * Helper function to check if given permissions are granted
+     * @param permissions the list of permissions to check
+     */
     private boolean arePermissionsGranted(String[] permissions) {
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
@@ -238,10 +246,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         return true;
     }
 
+    /**
+     * Request the required permission
+     * @param permissions the required permissions
+     * @param requestCode the flag to distinguish different permission request
+     */
     private void requestPermissionsCompat(String[] permissions, int requestCode) {
         ActivityCompat.requestPermissions(MapActivity.this, permissions, requestCode);
     }
 
+    /**
+     * Check if the required permissions are granted, alert if not.
+     */
     private void checkPermissions(final Context context) {
         int currentAPIVersion = Build.VERSION.SDK_INT;
         if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
@@ -287,13 +303,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             }
         }
     }
-
-
-
-    /**
-     *
-     * @param googleMap
-     */
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -384,6 +393,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
     }
 
+    /**
+     * Draw a marker on the map
+     * @param latitude the latitude of target location
+     * @param longitude the longitude of target location
+     * @param name the name of added marker
+     */
     private void mark(double latitude, double longitude, String name){
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(latitude, longitude))
@@ -398,6 +413,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         Log.i("msg","add marker on "+latitude+","+longitude);
     }
 
+    /**
+     * start to listen to the location updates, will load location every 20s
+     */
     private void startLocationUpdates() {
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);
@@ -410,6 +428,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 null /* Looper */);
     }
 
+    /**
+     * Move the camera to a target position
+     * @param latLng the destination of move
+     */
     private void moveToPoint(LatLng latLng){
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)

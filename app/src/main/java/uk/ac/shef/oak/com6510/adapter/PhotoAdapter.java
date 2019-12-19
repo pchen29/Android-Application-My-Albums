@@ -2,6 +2,7 @@ package uk.ac.shef.oak.com6510.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
     public PhotoAdapter(Context cont, List<Photo> list) {
         super();
         this.list = list;
+        Log.i("msg","list created");
         context = cont;
     }
 
