@@ -13,6 +13,7 @@ import java.util.List;
 import uk.ac.shef.oak.com6510.Dao.PhotoDAO;
 import uk.ac.shef.oak.com6510.database.PhotoDatabase;
 import uk.ac.shef.oak.com6510.model.Photo;
+import uk.ac.shef.oak.com6510.viewModel.PhotoViewModel;
 
 public class PhotoRepository {
 
@@ -22,8 +23,10 @@ public class PhotoRepository {
     private PhotoDatabase photoDatabase;
     private PhotoDAO photoDAO;
     private Application application;
+    private PhotoViewModel caller;
 
-    public PhotoRepository(Application application){
+    public PhotoRepository(Application application, PhotoViewModel photoViewModel){
+        caller = photoViewModel;
         this.application = application;
         photoDatabase = PhotoDatabase.getDatabase(application);
         photoDAO = photoDatabase.photoDao();
@@ -100,7 +103,7 @@ public class PhotoRepository {
         }
 
         protected void onPostExecute(List<Photo> result) {
-            photoList.setValue(result);
+            caller.getPhotoList().setValue(result);
             Log.d("SelectAsyncTask",""+photoList.getValue().size());
         }
     }

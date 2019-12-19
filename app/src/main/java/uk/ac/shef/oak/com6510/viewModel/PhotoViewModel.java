@@ -21,13 +21,13 @@ public class PhotoViewModel extends AndroidViewModel {
 
     public PhotoViewModel(Application application){
         super(application);
-        photoRepository = new PhotoRepository(application);
+        photoRepository = new PhotoRepository(application,this);
         photoList = new MutableLiveData<List<Photo>>();
         photoItem = new MutableLiveData<Photo>();
     }
 
     public void updatePhotoList(String title){
-        photoList = photoRepository.getPhotoList(title);
+        photoRepository.getPhotoList(title);
     }
     
     public MutableLiveData<List<Photo>> getPhotoList(){
