@@ -78,7 +78,9 @@ public class PathAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
 
     public int getItemCount() {
-        return list.size();
+        if(list != null)
+            return list.size();
+        return 0;
     }
 
     public List<Path> getList() {

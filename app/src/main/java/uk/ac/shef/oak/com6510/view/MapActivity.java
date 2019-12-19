@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +38,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -85,14 +87,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private LocationCallback locationCallback;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
+    private Button stopbtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)  {
         Log.i("onCreate","map oncreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_map);
-        Bundle b = getIntent().getExtras();
 
+        Bundle b = getIntent().getExtras();
         title = b.getString("title");
 
         // sensors
@@ -127,7 +130,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .allowMultiple(true)
                 .build();
 
-        // add click event
+        // take photo
         fab = (FloatingActionButton) findViewById(R.id.take_photo_btn);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +143,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
             }
         });
+
+        // stop tracking
+        stopbtn = (Button) findViewById(R.id.stop_btn);
+        stopbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopLocationUpdates(mFusedLocationProviderClient);
+                Log.d("msg","stop to update your location");
+            }
+        });
     }
 
     @Override
@@ -147,15 +160,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         super.onDestroy();
         mBarometer.stopBarometer();
         mTemperatureSensor.stopTemperatureSensor();
-    }
-
-    /**
-     * set the file name of image
-     */
-    private String setImageName(){
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp;
-        return imageFileName;
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -183,29 +187,36 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private void onPhotosReturned(@NonNull MediaFile[] returnedPhotos) {
         // insert a new photo to DB
         for(int i=0;i<returnedPhotos.length;i++){
-
-            Photo photo = new Photo();
-            photo.setTitle(title);
-            String name = returnedPhotos[0].getFile().getName();
-            photo.setName(name);
-            photo.setPhotoUrl(returnedPhotos[0].getFile().getAbsoluteFile().toString());
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String timeStamp = dateFormat.format(new Date());
-            String date = timeStamp.substring(0,10);
-            String time = timeStamp.substring(11,16);
-            photo.setDate(date);
-            photo.setTime(time);
-            photo.setLatitude(mLastKnownLocation.getLatitude());
-            photo.setLongitude(mLastKnownLocation.getLongitude());
-
-            mark(photo.getLongitude(),photo.getLatitude(),photo.getName());
-
-            photo.setTemperature(String.valueOf(mTemperatureSensor.getTemperatureValue()) + " °C");
-            photo.setPressure(String.valueOf(mBarometer.getPressureValue())+" mbars");
-
-            pViewModel.insertPhoto(photo);
+            addPhoto(returnedPhotos[i],title,mLastKnownLocation);
         }
+    }
+
+    /**
+     * store the new photo
+     */
+    private void addPhoto(MediaFile mediaFile,String title,Location location){
+        Photo photo = new Photo();
+        photo.setTitle(title);
+        String name = mediaFile.getFile().getName();
+        photo.setName(name);
+        photo.setPhotoUrl(mediaFile.getFile().getAbsoluteFile().toString());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String timeStamp = dateFormat.format(new Date());
+        String date = timeStamp.substring(0,10);
+        String time = timeStamp.substring(11,16);
+        photo.setDate(date);
+        photo.setTime(time);
+        photo.setLatitude(location.getLatitude());
+        photo.setLongitude(location.getLongitude());
+
+        markPhotoLocation(photo.getLatitude(),photo.getLongitude(),photo.getName());
+
+        photo.setTemperature(String.valueOf(mTemperatureSensor.getTemperatureValue()) + " °C");
+        photo.setPressure(String.valueOf(mBarometer.getPressureValue())+" mbars");
+
+        Log.d("temp", photo.getTemperature());
+        pViewModel.insertPhoto(photo);
     }
 
     private boolean arePermissionsGranted(String[] permissions) {
@@ -365,9 +376,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private void mark(double latitude, double longitude, String name){
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(latitude, longitude))
+                .title(name).icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_blue_marker)));
+        Log.i("msg","add marker on "+latitude+","+longitude);
+    }
+
+    private void markPhotoLocation(double latitude, double longitude, String name){
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(latitude, longitude))
                 .title(name));
         Log.i("msg","add marker on "+latitude+","+longitude);
-
     }
 
     private void startLocationUpdates() {
@@ -388,6 +405,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .zoom(DEFAULT_ZOOM)
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    /**
+     *  stop to update location
+     */
+    private void stopLocationUpdates(FusedLocationProviderClient mFusedLocationProviderClient) {
+        mFusedLocationProviderClient.removeLocationUpdates(locationCallback);
     }
 
 }

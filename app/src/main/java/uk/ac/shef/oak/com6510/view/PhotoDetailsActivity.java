@@ -17,6 +17,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
 import uk.ac.shef.oak.com6510.R;
 import uk.ac.shef.oak.com6510.databinding.PhotoDetailsBinding;
 import uk.ac.shef.oak.com6510.model.Photo;
@@ -62,6 +64,9 @@ public class PhotoDetailsActivity extends AppCompatActivity implements OnMapRead
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.photo_map);
         mapFragment.getMapAsync(this);
+
+        String title = b.getString("title");
+        addMarks(pViewModel.getPhotoList(title).getValue());
     }
 
     @Override
@@ -72,6 +77,15 @@ public class PhotoDetailsActivity extends AppCompatActivity implements OnMapRead
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+
+    private void addMarks(List<Photo> photoList){
+        for(int i=0;i<photoList.size();i++){
+            Photo photo = new Photo();
+            photo = photoList.get(0);
+            //mark(photo.getLatitude(),photo.getLongitude(),photo.getTitle());
+        }
     }
 
 

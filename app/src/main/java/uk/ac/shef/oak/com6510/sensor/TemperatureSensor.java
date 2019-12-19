@@ -37,7 +37,7 @@ public class TemperatureSensor {
         if(mTemperatureSensor == null){
             Log.d(TAG, "Standard Temperature Sensor unavailable");
         }else{
-
+            Log.d(TAG, "Using Temperature Sensor");
             mTemperatureListener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {

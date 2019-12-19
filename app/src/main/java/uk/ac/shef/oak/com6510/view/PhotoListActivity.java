@@ -36,8 +36,8 @@ public class PhotoListActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.photo_list);
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this,factory).get(PhotoViewModel.class);
-        photoList = pViewModel.getPhotoList(title);
-        Log.d("title",title);
+        photoList = pViewModel.getAllPhotos();
+        //Log.d("title",title);
 
         if(photoList.getValue() != null){
             Log.d("size", ""+photoList.getValue().size());

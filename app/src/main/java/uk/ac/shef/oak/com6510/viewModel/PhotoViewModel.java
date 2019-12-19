@@ -23,6 +23,9 @@ public class PhotoViewModel extends AndroidViewModel {
     public PhotoViewModel(Application application){
         super(application);
         photoRepository = new PhotoRepository(application);
+        photoList = new MutableLiveData<List<Photo>>();
+        photoItem = new MutableLiveData<Photo>();
+        photoAllList = new MutableLiveData<List<Photo>>();
     }
 
     public MutableLiveData<List<Photo>> getPhotoList(String title){
