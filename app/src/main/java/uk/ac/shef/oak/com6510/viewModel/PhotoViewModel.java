@@ -27,6 +27,13 @@ public class PhotoViewModel extends AndroidViewModel {
         photoItem = new MutableLiveData<Photo>();
     }
 
+
+    /**
+     * Send out an update request to photoRepository,
+     * photoRepository will start an async task to handle the request
+     * the photoList will be updated when task finished
+     * @param title the title of path that photos belong to
+     */
     public void updatePhotoList(String title){
         photoRepository.getPhotoList(title);
     }

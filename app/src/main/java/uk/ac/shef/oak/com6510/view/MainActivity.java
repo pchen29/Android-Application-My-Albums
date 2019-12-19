@@ -87,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * bind data and show list
+     * Helper function to check if given permissions are granted
+     * @param pViewModel the viewModel to set
+     * @param pathList the list of paths that need to display
      */
     private void bindData(PathViewModel pViewModel, MutableLiveData<List<Path>> pathList){
         PathListBinding binding = DataBindingUtil.setContentView(this, R.layout.path_list);
