@@ -25,8 +25,11 @@ public class PhotoViewModel extends AndroidViewModel {
         photoItem = new MutableLiveData<Photo>();
     }
 
-    public MutableLiveData<List<Photo>> getPhotoList(String title){
+    public void updatePhotoList(String title){
         photoList.setValue(photoRepository.getPhotoList(title));
+    }
+    
+    public MutableLiveData<List<Photo>> getPhotoList(){
         return photoList;
     }
 
