@@ -37,24 +37,22 @@ public class PhotoListActivity extends AppCompatActivity{
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         pViewModel = ViewModelProviders.of(this, factory).get(PhotoViewModel.class);
         photoList = pViewModel.getPhotoList(title);
+        final GridLayoutManager layoutManager = new GridLayoutManager(this,3,
+                GridLayoutManager.HORIZONTAL,false);
 
         pViewModel.getPhotoList(title).observe(this, new Observer<List<Photo>>() {
             @Override
             public void onChanged(List<Photo> photos) {
+                binding.setPhotos(pViewModel);
                 photoList.postValue(photos);
                 Log.d("msg","update photo list");
+                pAdapter = new PhotoAdapter(getApplicationContext(), photoList.getValue());
+                binding.photoList.setLayoutManager(layoutManager);
+                binding.photoList.setAdapter(pAdapter);
             }
         });
 
-        if (!photoList.getValue().isEmpty()){
-            binding.setPhotos(pViewModel);
-            Log.d("size", ""+photoList.getValue().size());
-            GridLayoutManager layoutManager = new GridLayoutManager(this,3,
-                GridLayoutManager.HORIZONTAL,false);
-            binding.photoList.setLayoutManager(layoutManager);
-            pAdapter = new PhotoAdapter(this, photoList.getValue());
-            binding.photoList.setAdapter(pAdapter);
-        }else{
+        if (photoList.getValue().isEmpty()){
             Intent intent = new Intent(this, MapActivity.class);
             intent.putExtra("title", title);
             startActivity(intent);
