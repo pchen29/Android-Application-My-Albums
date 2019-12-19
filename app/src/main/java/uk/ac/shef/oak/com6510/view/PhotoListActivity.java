@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.shef.oak.com6510.R;
@@ -38,22 +39,20 @@ public class PhotoListActivity extends AppCompatActivity{
         pViewModel = ViewModelProviders.of(this, factory).get(PhotoViewModel.class);
         final GridLayoutManager layoutManager = new GridLayoutManager(this,3,
                 GridLayoutManager.HORIZONTAL,false);
-
+        pAdapter = new PhotoAdapter(getApplicationContext(),new ArrayList<Photo>());
+        binding.photoList.setAdapter(pAdapter);
+        binding.photoList.setLayoutManager(layoutManager);
         pViewModel.getPhotoList().observe(this, new Observer<List<Photo>>() {
             @Override
             public void onChanged(List<Photo> photos) {
                 binding.setPhotos(pViewModel);
                 //photoList.postValue(photos);
-                Log.d("msg","update photo list");
+                Log.d("msg",pViewModel.getPhotoList().getValue().size()+"");
                 pAdapter = new PhotoAdapter(getApplicationContext(), pViewModel.getPhotoList().getValue());
-
-                Log.i("size",""+pViewModel.getPhotoList().getValue());
-                binding.photoList.setLayoutManager(layoutManager);
-                binding.photoList.setAdapter(pAdapter);
 
             }
         });
-        
+        Log.i("msg","updateListInActivity");
         pViewModel.updatePhotoList(title);
 
         /*if (photoList.getValue().isEmpty()){
