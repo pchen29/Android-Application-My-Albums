@@ -21,7 +21,6 @@ public class PathViewModel extends AndroidViewModel {
         pathRepository = new PathRepository(application);
     }
 
-
     public MutableLiveData<List<Path>> getPathList(){
         pathList = pathRepository.getPathList();
         return pathList;

@@ -2,31 +2,34 @@ package uk.ac.shef.oak.com6510.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
-import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.util.List;
-
-@Entity(indices={@Index(value={"title"}, unique = true)})
+@Entity(indices = {@Index(value = "id")})
 public class Marks {
-    @PrimaryKey
+
+    @PrimaryKey(autoGenerate = true)
     @NonNull
-    public int id = 0;
+    private int id = 0;
 
     @ColumnInfo(name = "title")
-    public String title;
+    private String title;
 
-    @Embedded
-    public List<MarkInfo> markInfoList;
+    @ColumnInfo(name = "name")
+    private String name;
 
-    public class MarkInfo{
-        double longitude;
-        double latitude;
+    private double longitude;
+    private double latitude;
+
+    public Marks(String title, String name, double longitude, double latitude) {
+        this.title = title;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-
+    @NonNull
     public void setId(int id) {
         this.id = id;
     }
@@ -35,20 +38,37 @@ public class Marks {
         this.title = title;
     }
 
-    public void setMarkInfoList(List<MarkInfo> markInfoList) {
-        this.markInfoList = markInfoList;
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+
+    @NonNull
     public int getId() {
         return id;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getTitle() {
         return title;
     }
-
-    public List<MarkInfo> getMarkInfoList() {
-        return markInfoList;
-    }
 }
-

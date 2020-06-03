@@ -64,6 +64,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
                 intent.putExtra("url",photo.getPhotoUrl());
                 intent.putExtra("pressure",photo.getPressure());
                 intent.putExtra("temperature", photo.getTemperature());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });

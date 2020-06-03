@@ -4,6 +4,7 @@ import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
@@ -15,13 +16,15 @@ import uk.ac.shef.oak.com6510.model.Path;
 public class PathRepository  {
 
     private MutableLiveData<List<Path>> pathList;
+    private MutableLiveData<Path> path;
     private PathDatabase pathDatabase;
     private PathDAO pathDAO;
 
     public PathRepository(Application application){
         this.pathDatabase = PathDatabase.getPathDataBase(application);
-        this.pathDAO = pathDatabase.pahDao();
+        this.pathDAO = pathDatabase.pathDao();
         pathList = new MutableLiveData<List<Path>>();
+        path = new MediatorLiveData<Path>();
     }
 
     public MutableLiveData<List<Path>> getPathList(){
@@ -47,10 +50,16 @@ public class PathRepository  {
 
         @Override
         protected Void doInBackground(Path... paths) {
-            for (int i = 0; i < paths.length; i++) {
-                mPathDAO.insertPath(paths[i]);
-                Log.d("msg", "insert a new path to DB");
+
+            try{
+                for (int i = 0; i < paths.length; i++) {
+                    mPathDAO.insertPath(paths[i]);
+                    Log.d("msg", "insert a new path to DB");
+                }
+            }catch (Exception e){
+                Log.e("Exception", "fail to insert a path to DB");
             }
+
             return null;
         }
     }

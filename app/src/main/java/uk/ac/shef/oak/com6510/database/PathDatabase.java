@@ -14,7 +14,7 @@ import uk.ac.shef.oak.com6510.model.Path;
 @Database(entities = {Path.class}, version = 1, exportSchema = false)
 public abstract class PathDatabase extends RoomDatabase {
 
-    public abstract PathDAO pahDao();
+    public abstract PathDAO pathDao();
     private static volatile PathDatabase INSTANCE;
 
     public static PathDatabase getPathDataBase(final Context context){

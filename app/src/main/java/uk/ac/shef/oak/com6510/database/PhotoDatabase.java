@@ -11,7 +11,7 @@ import uk.ac.shef.oak.com6510.model.Photo;
 import uk.ac.shef.oak.com6510.Dao.PhotoDAO;
 
 /**
- * consider too man
+ * consider
  */
 
 @Database(entities = {Photo.class}, version = 3, exportSchema = false)

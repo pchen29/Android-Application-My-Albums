@@ -36,13 +36,11 @@ public class PhotoRepository {
 
     public MutableLiveData<List<Photo>> getPhotoList(String title){
         new SelectAsyncTask(photoDAO).execute(title);
-        Log.d(TAG,"get photo list from DB");
         return photoList;
     }
 
     public MutableLiveData<Photo> getPhotoItem(String name){
         new SelectItemAsyncTask(photoDAO).execute(name);
-        Log.d(TAG,"get a photo from DB");
         return photoItem;
     }
 
@@ -96,7 +94,7 @@ public class PhotoRepository {
             List<Photo> photos = new ArrayList<Photo>();
             for(int i=0; i<titles.length;i++){
                 photos = sPhotoDAO.findPhotoByTitle(titles[i]);
-                Log.d("SelectAsyncTask","get photo list from DB");
+                Log.d(TAG,"get photo list from DB");
                 Log.d("SelectAsyncTask",""+photos.size());
             }
             return photos;
@@ -104,7 +102,6 @@ public class PhotoRepository {
 
         protected void onPostExecute(List<Photo> result) {
             caller.getPhotoList().setValue(result);
-            //Log.d("SelectAsyncTask",""+photoList.getValue().size());
         }
     }
 
@@ -124,7 +121,7 @@ public class PhotoRepository {
         protected Photo doInBackground(String... names){
             for(int i=0;i<names.length;i++){
                 photo = sPhotoDAO.findPhotoByName(names[i]);
-                Log.d("SelectItemAsyncTask","get photo list from DB");
+                Log.d(TAG,"get photo list from DB");
                 Log.d("SelectItemAsyncTask",photo.getName());
             }
             return photo;

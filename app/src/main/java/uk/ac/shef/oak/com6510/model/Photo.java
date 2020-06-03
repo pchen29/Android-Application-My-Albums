@@ -3,15 +3,14 @@ package uk.ac.shef.oak.com6510.model;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(indices={@Index(value = "name")})
+@Entity(indices = {@Index(value = "name")})
 public class Photo {
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    private int id=0;
+    private int id = 0;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -29,80 +28,98 @@ public class Photo {
     private String pressure;
     private String photoUrl;
 
-
-    public void setId(@NonNull int id){this.id = id;}
-
-    public void setName(String name){
+    public Photo(String name, String title, String date, String time, String temperature, String pressure, String photoUrl, double longitude, double latitude) {
         this.name = name;
-    }
-
-    public void setTitle(String title){
         this.title = title;
-    }
-
-    public void setDate(String date){
         this.date = date;
-    }
-
-    public void setTime(String time){
         this.time = time;
-    }
-
-    public void setLongitude(double longitude){
+        this.temperature = temperature;
+        this.pressure = pressure;
+        this.photoUrl = photoUrl;
         this.longitude = longitude;
-    }
-
-    public void setLatitude(double latitude){
         this.latitude = latitude;
     }
 
-    public void setTemperature(String temperature){
+
+    public void setId(@NonNull int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setTemperature(String temperature) {
         this.temperature = temperature;
     }
 
-    public void setPressure(String pressure){
+    public void setPressure(String pressure) {
         this.pressure = pressure;
     }
 
-    public void setPhotoUrl(String photoUrl){this.photoUrl = photoUrl;}
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
 
     @NonNull
-    public int getId(){
+    public int getId() {
         return id;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return title;
     }
 
-    public String getDate(){
+    public String getDate() {
         return date;
     }
 
-    public String getTime(){
+    public String getTime() {
         return time;
     }
 
-    public double getLongitude(){
+    public double getLongitude() {
         return longitude;
     }
 
-    public double getLatitude(){
+    public double getLatitude() {
         return latitude;
     }
 
-    public String getTemperature(){
+    public String getTemperature() {
         return temperature;
     }
 
-    public String getPressure(){
+    public String getPressure() {
         return pressure;
     }
 
-    public String getPhotoUrl(){ return photoUrl;}
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
 
 }

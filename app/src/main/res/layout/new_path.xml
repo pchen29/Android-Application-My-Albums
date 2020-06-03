@@ -48,6 +48,7 @@
             app:layout_constraintVertical_bias="0.290" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="100dp"
@@ -67,7 +68,22 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/notification"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="14dp"
+                android:text="@string/notification_repeat"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginLeft="6dp"
+                android:visibility="gone"
+                android:textColor="@color/colorPrimary"
+                />
+
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <Button
             android:id="@+id/store_data"

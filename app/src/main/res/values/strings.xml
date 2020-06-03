@@ -12,4 +12,9 @@
     <string name="pressure">Pressure</string>
     <string name="temperature">Temperature</string>
 
+    <string name="empty_string">There is empty. Let create a path!</string>
+
+    <string name="notification_empty">* Please input the title</string>
+    <string name="notification_repeat">* The title has been used</string>
+
 </resources>

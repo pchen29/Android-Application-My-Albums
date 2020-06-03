@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.util.List;
 
 @Entity(indices={@Index(value={"title"}, unique = true)})
 public class Path {
@@ -14,7 +15,7 @@ public class Path {
     private int id=0;
     private String title;
     private String date;
-    private  String time;
+    private String time;
 
     public void setId(@NonNull int id){this.id = id;}
 

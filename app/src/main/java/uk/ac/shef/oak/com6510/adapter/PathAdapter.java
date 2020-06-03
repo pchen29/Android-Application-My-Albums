@@ -44,8 +44,10 @@ public class PathAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //Inflate the layout, initialize the View Holder
+
         ItemPathBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
-                    R.layout.item_path, parent, false);
+                R.layout.item_path, parent, false);
+
         return new ViewHolder((binding));
     }
 
@@ -71,6 +73,7 @@ public class PathAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             });
         }
     }
+
 
     // convenience method for getting data at click position
     Path getItem(int id) {

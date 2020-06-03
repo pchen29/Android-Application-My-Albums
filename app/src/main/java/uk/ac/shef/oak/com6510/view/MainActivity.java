@@ -14,6 +14,7 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     public  PathViewModel pViewModel;
     public  MutableLiveData<List<Path>> pathList;
     private FloatingActionButton mButton;
+    private RecyclerView.Adapter pAdapter;
+    private PathListBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,38 +43,50 @@ public class MainActivity extends AppCompatActivity {
         pViewModel = ViewModelProviders.of(this,factory).get(PathViewModel.class);
         pathList = pViewModel.getPathList();
 
+        // Bind data
+        binding = DataBindingUtil.setContentView(this, R.layout.path_list);
+        binding.setLifecycleOwner(this);
+        binding.setPath(pViewModel);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.pathList.setLayoutManager(layoutManager);
+        pAdapter = new PathAdapter(this,pathList.getValue());
+        binding.pathList.setAdapter(pAdapter);
+
+        // Monitor data
+        pViewModel.getPathList().observe(this, new Observer<List<Path>>() {
+            @Override
+            public void onChanged(List<Path> paths) {
+                binding.setPath(pViewModel);
+                pAdapter = new PathAdapter(getApplicationContext(),pathList.getValue());
+                binding.pathList.setAdapter(pAdapter);
+            }
+        });
+
+        // add a click event
+        mButton = (FloatingActionButton) findViewById(R.id.add_button);
+        clickFab(mButton);
+
         /*
          * if users open the app fo the first time,
          * they can be shown an empty page
          */
-        try{
-            if(pathList.getValue().isEmpty()){
-                setContentView(R.layout.empty_list);
-                // add a click event
-                mButton = (FloatingActionButton) findViewById(R.id.add_button);
-                clickFab(mButton);
-            }else{
-                bindData(pViewModel,pathList);
-                // add a click event
-                mButton = (FloatingActionButton) findViewById(R.id.add_button);
-                clickFab(mButton);
-            }
 
-        }catch (Exception e){
-            Log.e("MainActivity","have exception");
-        }
+
     }
 
-
+    /**
+     * Update the path list
+     */
     @Override
     public void onResume(){
         super.onResume();
-        pathList = pViewModel.getPathList();
-        bindData(pViewModel, pathList);
-        mButton = (FloatingActionButton) findViewById(R.id.add_button);
-        clickFab(mButton);
-    }
 
+        pathList = pViewModel.getPathList();
+        binding.setPath(pViewModel);
+        pAdapter = new PathAdapter(getApplicationContext(),pathList.getValue());
+        binding.pathList.setAdapter(pAdapter);
+
+    }
 
     /**
      * click event for add button
@@ -84,21 +100,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-
-    /**
-     * Helper function to check if given permissions are granted
-     * @param pViewModel the viewModel to set
-     * @param pathList the list of paths that need to display
-     */
-    private void bindData(PathViewModel pViewModel, MutableLiveData<List<Path>> pathList){
-        PathListBinding binding = DataBindingUtil.setContentView(this, R.layout.path_list);
-        binding.setLifecycleOwner(this);
-        binding.setPath(pViewModel);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        binding.pathList.setLayoutManager(layoutManager);
-        RecyclerView.Adapter pAdapter = new PathAdapter(this, pathList.getValue());
-        binding.pathList.setAdapter(pAdapter);
     }
 }
